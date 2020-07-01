@@ -3,8 +3,7 @@
 
 #include "SunrisePlayerCharacter.h"
 
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
+#include "Engine/GameEngine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
@@ -14,11 +13,21 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
     // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = false;
+    bUseControllerRotationRoll = false;
+
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
+
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
     SpringArmComponent->SetupAttachment(RootComponent);
+    SpringArmComponent->TargetArmLength = 600.0f;
+    SpringArmComponent->bUsePawnControlRotation = true;
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-    CameraComponent->SetupAttachment(SpringArmComponent);
+    CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
+    CameraComponent->bUsePawnControlRotation = false;
 
 }
 
@@ -34,6 +43,14 @@ void ASunrisePlayerCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    if (bZoomingIn)
+        ZoomFactor += DeltaTime / 0.5f;
+    if (bZoomingOut)
+        ZoomFactor -= DeltaTime / 0.5f;
+
+    ZoomFactor = FMath::Clamp<float>(ZoomFactor, 0.0f, 1.0f);
+    CameraComponent->FieldOfView = FMath::Lerp<float>(90.0f, 70.0f, ZoomFactor);
+    SpringArmComponent->TargetArmLength = FMath::Lerp<float>(600.0f, 400.0f, ZoomFactor);
 }
 
 // Called to bind functionality to input
@@ -41,48 +58,52 @@ void ASunrisePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    check(InputComponent);
+    check(PlayerInputComponent);
 
-    InputComponent->BindAxis(TEXT("HorizontalPlayerMovement"), this, &ASunrisePlayerCharacter::HorizontalPlayerMovement);
-    InputComponent->BindAxis(TEXT("VerticalPlayerMovement"), this, &ASunrisePlayerCharacter::VerticalPlayerMovement);
+    PlayerInputComponent->BindAxis(TEXT("CameraYaw"), this, &APawn::AddControllerYawInput);
+    PlayerInputComponent->BindAxis(TEXT("CameraZoom"), this, &ASunrisePlayerCharacter::ZoomCamera);
 
+    PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ASunrisePlayerCharacter::MoveForward);
+    PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ASunrisePlayerCharacter::MoveRight);
 }
 
-void ASunrisePlayerCharacter::HorizontalPlayerMovement(float Value)
+void ASunrisePlayerCharacter::ZoomCamera(float AxisValue)
 {
-    if ((Controller != NULL) && (Value != 0.0f))
+    if ((Controller != NULL) && (AxisValue != 0.0f))
     {
-        // find out which way is horizontal
-        FRotator Rotation = Controller->GetControlRotation();
-
-        // limit pitch when walking or falling
-        if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
+        if (AxisValue < 0.0f)
         {
-            Rotation.Pitch = 0.0f;
+            bZoomingIn = true;
+            bZoomingOut = false;
         }
-
-        // add movement in that direction
-        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-        AddMovementInput(Direction, Value);
+        if (AxisValue > 0.0f)
+        {
+            bZoomingIn = false;
+            bZoomingOut = true;
+        }
+    }
+    else
+    {
+        bZoomingIn = false;
+        bZoomingOut = false;
     }
 }
 
-void ASunrisePlayerCharacter::VerticalPlayerMovement(float Value)
+void ASunrisePlayerCharacter::MoveForward(float AxisValue)
 {
-    if ((Controller != NULL) && (Value != 0.0f))
-    {
-        // find out which way is horizontal
-        FRotator Rotation = Controller->GetControlRotation();
+    FRotator Rotation = Controller->GetControlRotation();
+    FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
 
-        // limit pitch when walking or falling
-        if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
-        {
-            Rotation.Pitch = 0.0f;
-        }
+    FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+    AddMovementInput(Direction, AxisValue);
+}
 
-        // add movement in that direction
-        const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-        AddMovementInput(Direction, Value);
-    }
+void ASunrisePlayerCharacter::MoveRight(float AxisValue)
+{
+    FRotator Rotation = Controller->GetControlRotation();
+    FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+
+    FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+    AddMovementInput(Direction, AxisValue);
 }
 

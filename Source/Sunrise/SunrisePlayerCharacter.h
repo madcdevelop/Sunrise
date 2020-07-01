@@ -4,6 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "Components/InputComponent.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+
 #include "SunriseCharacter.h"
 #include "SunrisePlayerCharacter.generated.h"
 
@@ -28,18 +35,23 @@ public:
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
-    void HorizontalPlayerMovement(float Value);
-    void VerticalPlayerMovement(float Value);
+protected:
 
-public:
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
     class USpringArmComponent* SpringArmComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
     class UCameraComponent* CameraComponent;
+    
+    // Input variables
+    float ZoomFactor;
+    bool bZoomingIn;
+    bool bZoomingOut;
 
+    // Input functions
+    void ZoomCamera(float AxisValue);
+    void MoveForward(float AxisValue);
+    void MoveRight(float AxisValue);
 
 
 };
