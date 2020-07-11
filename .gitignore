@@ -275,5 +275,23 @@ __pycache__/
 
 *.suo
 
-# downloaded content
+# ------------------------------
+# downloaded content and source
+# ------------------------------
+
+# content
 /Content/StarterContent
+/Content/AdvancedVillagePack
+/Content/MCO_Mocap_Basics
+/Content/ParagonGideon
+
+# source
+/Source/FBX
+/Source/Maya
+/Source/MotionBuilder
+/Source/SKMannequin_A_Pose
+/Source/SKMannequin_T_Pose
+
+/Source/SK_Mannequin_A_Pose_README.txt
+/Source/SK_Mannequin_T_Pose_README.txt
+/Source/UE4_MocapOnline_Tech_Notes.txt

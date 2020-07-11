@@ -20,6 +20,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = Properties)
+	int32 Health;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
