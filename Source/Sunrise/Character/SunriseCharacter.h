@@ -6,10 +6,6 @@
 #include "GameFramework/Character.h"
 #include "SunriseCharacter.generated.h"
 
-// Logging
-DECLARE_LOG_CATEGORY_EXTERN(SunriseGameplayLog, Log, All);
-
-
 UCLASS(blueprintable)
 class SUNRISE_API ASunriseCharacter : public ACharacter
 {

@@ -1,0 +1,128 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Sunrise (Debug)",
+			"request": "launch",
+			"preLaunchTask": "Sunrise Win64 Debug Build",
+			"program": "E:\\Code\\Unreal Project\\Sunrise\\Binaries\\Win64\\UE4-Win64-Debug.exe",
+			"args": [
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Sunrise (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "Sunrise Win64 DebugGame Build",
+			"program": "E:\\Code\\Unreal Project\\Sunrise\\Binaries\\Win64\\UE4-Win64-DebugGame.exe",
+			"args": [
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Sunrise (Development)",
+			"request": "launch",
+			"preLaunchTask": "Sunrise Win64 Development Build",
+			"program": "E:\\Code\\Unreal Project\\Sunrise\\Binaries\\Win64\\UE4.exe",
+			"args": [
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Sunrise (Shipping)",
+			"request": "launch",
+			"preLaunchTask": "Sunrise Win64 Shipping Build",
+			"program": "E:\\Code\\Unreal Project\\Sunrise\\Binaries\\Win64\\UE4-Win64-Shipping.exe",
+			"args": [
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Sunrise (Test)",
+			"request": "launch",
+			"preLaunchTask": "Sunrise Win64 Test Build",
+			"program": "E:\\Code\\Unreal Project\\Sunrise\\Binaries\\Win64\\UE4-Win64-Test.exe",
+			"args": [
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "SunriseEditor (Debug)",
+			"request": "launch",
+			"preLaunchTask": "SunriseEditor Win64 Debug Build",
+			"program": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Binaries\\Win64\\UE4Editor-Win64-Debug.exe",
+			"args": [
+				"E:\\Code\\Unreal Project\\Sunrise\\Sunrise.uproject"
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "SunriseEditor (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "SunriseEditor Win64 DebugGame Build",
+			"program": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Binaries\\Win64\\UE4Editor-Win64-DebugGame.exe",
+			"args": [
+				"E:\\Code\\Unreal Project\\Sunrise\\Sunrise.uproject"
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "SunriseEditor (Development)",
+			"request": "launch",
+			"preLaunchTask": "SunriseEditor Win64 Development Build",
+			"program": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Binaries\\Win64\\UE4Editor.exe",
+			"args": [
+				"E:\\Code\\Unreal Project\\Sunrise\\Sunrise.uproject"
+			],
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25",
+			"stopAtEntry": false,
+			"externalConsole": true,
+			"type": "cppvsdbg",
+			"visualizerFile": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Extras\\VisualStudioDebugging\\UE4.natvis"
+		},
+		{
+			"name": "Generate Project Files",
+			"type": "clr",
+			"request": "launch",
+			"program": "E:\\Program Files\\Epic Games\\UE_4.25\\Engine\\Binaries\\DotNET\\UnrealBuildTool.exe",
+			"console": "externalTerminal",
+			"args": [
+				"-projectfiles",
+				"-vscode",
+				"-project=\"E:\\Code\\Unreal Project\\Sunrise\\Sunrise.uproject\"",
+				"-game",
+				"-engine"
+			],
+			"internalConsoleOptions": "openOnSessionStart",
+			"cwd": "E:\\Program Files\\Epic Games\\UE_4.25"
+		}
+	]
+}

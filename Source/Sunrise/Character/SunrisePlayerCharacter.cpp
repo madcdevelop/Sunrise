@@ -123,22 +123,22 @@ void ASunrisePlayerCharacter::Attack()
 {
     Super::Attack();
 
-    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is attacking."));
+    UE_LOG(LogTemp, Display, TEXT("The player is attacking."));
 }
 
 void ASunrisePlayerCharacter::Defend()
 {
     Super::Defend();
 
-    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is defending."));
+    UE_LOG(LogTemp, Display, TEXT("The player is defending."));
 }
 
 void ASunrisePlayerCharacter::UseItem()
 {
-    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is using an item."));
+    UE_LOG(LogTemp, Display, TEXT("The player is using an item."));
 }
 
 void ASunrisePlayerCharacter::Interact()
 {
-    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is interacting."));
+    UE_LOG(LogTemp, Display, TEXT("The player is interacting."));
 }

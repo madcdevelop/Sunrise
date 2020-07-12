@@ -3,9 +3,6 @@
 
 #include "SunriseCharacter.h"
 
-// Logging
-DEFINE_LOG_CATEGORY(SunriseGameplayLog);
-
 // Sets default values
 ASunriseCharacter::ASunriseCharacter()
 {
