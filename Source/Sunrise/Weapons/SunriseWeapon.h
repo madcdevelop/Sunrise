@@ -6,6 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "SunriseWeapon.generated.h"
 
+enum Weapons {
+    SWORD = 0,
+    SPEAR,
+    WAND
+};
+
 UCLASS()
 class SUNRISE_API ASunriseWeapon : public AActor
 {
@@ -14,6 +20,9 @@ class SUNRISE_API ASunriseWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASunriseWeapon();
+
+    // Called every frame
+	virtual void Tick(float DeltaTime) override;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -21,13 +30,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	int32 WeaponId;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	FString Name;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
 	int32 Damage;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UStaticMeshComponent* WeaponMesh;
 
 };

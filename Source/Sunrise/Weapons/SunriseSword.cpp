@@ -9,6 +9,11 @@ ASunriseSword::ASunriseSword()
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
+    // Setup
+    WeaponId = SWORD;
+    Name = "Sword";
+    Damage = 50;
+
 }
 
 // Called when the game starts or when spawned
