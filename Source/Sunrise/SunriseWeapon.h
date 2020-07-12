@@ -14,16 +14,16 @@ class SUNRISE_API ASunriseWeapon : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASunriseWeapon();
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Properties)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	int32 WeaponId;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Properties)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	FString Name;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Properties)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
 	int32 Damage;
 
 public:	

@@ -39,7 +39,6 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
 void ASunrisePlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -64,12 +63,21 @@ void ASunrisePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 
     check(PlayerInputComponent);
 
+    // Camera
     PlayerInputComponent->BindAxis(TEXT("CameraYaw"), this, &APawn::AddControllerYawInput);
     PlayerInputComponent->BindAxis(TEXT("CameraZoom"), this, &ASunrisePlayerCharacter::ZoomCamera);
 
+    // Movement
     PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ASunrisePlayerCharacter::MoveForward);
     PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ASunrisePlayerCharacter::MoveRight);
+
+    // Input
+    PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &ASunrisePlayerCharacter::Attack);
+    PlayerInputComponent->BindAction(TEXT("Defend"), IE_Pressed, this, &ASunrisePlayerCharacter::Defend);
+    PlayerInputComponent->BindAction(TEXT("UseItem"), IE_Pressed, this, &ASunrisePlayerCharacter::UseItem);
+    PlayerInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ASunrisePlayerCharacter::Interact);
 }
+
 
 void ASunrisePlayerCharacter::ZoomCamera(float AxisValue)
 {
@@ -111,3 +119,26 @@ void ASunrisePlayerCharacter::MoveRight(float AxisValue)
     AddMovementInput(Direction, AxisValue);
 }
 
+void ASunrisePlayerCharacter::Attack()
+{
+    Super::Attack();
+
+    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is attacking."));
+}
+
+void ASunrisePlayerCharacter::Defend()
+{
+    Super::Defend();
+
+    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is defending."));
+}
+
+void ASunrisePlayerCharacter::UseItem()
+{
+    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is using an item."));
+}
+
+void ASunrisePlayerCharacter::Interact()
+{
+    UE_LOG(SunriseGameplayLog, Display, TEXT("The player is interacting."));
+}

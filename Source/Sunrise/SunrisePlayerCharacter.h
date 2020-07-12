@@ -37,10 +37,10 @@ public:
 
 protected:
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class USpringArmComponent* SpringArmComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class UCameraComponent* CameraComponent;
     
     // Input variables
@@ -53,5 +53,10 @@ protected:
     void MoveForward(float AxisValue);
     void MoveRight(float AxisValue);
 
+    // Actions
+    void Attack() override;
+    void Defend() override;
+    void UseItem();
+    void Interact();
 
 };

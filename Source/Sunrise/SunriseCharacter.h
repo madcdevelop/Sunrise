@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "SunriseCharacter.generated.h"
 
+// Logging
+DECLARE_LOG_CATEGORY_EXTERN(SunriseGameplayLog, Log, All);
+
 
 UCLASS(blueprintable)
 class SUNRISE_API ASunriseCharacter : public ACharacter
@@ -20,14 +23,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = Properties)
-	int32 Health;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+public:
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Properties")
+    int32 Health;
+
+protected:
+
+    // Actions
+    virtual void Attack();
+    virtual void Defend();
 
 };

@@ -19,9 +19,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Properties)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
     int32 ItemId;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Properties)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
     FString Name;
 
 public:	
