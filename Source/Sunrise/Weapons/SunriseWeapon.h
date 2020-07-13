@@ -9,7 +9,8 @@
 enum Weapons {
     SWORD = 0,
     SPEAR,
-    WAND
+    WAND,
+    BOMB
 };
 
 UCLASS()
