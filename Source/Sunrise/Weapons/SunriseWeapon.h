@@ -13,6 +13,9 @@ enum Weapons {
     BOMB
 };
 
+/**
+ * The base weapon class.
+ */
 UCLASS()
 class SUNRISE_API ASunriseWeapon : public AActor
 {

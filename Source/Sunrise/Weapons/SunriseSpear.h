@@ -7,7 +7,7 @@
 #include "SunriseSpear.generated.h"
 
 /**
- * 
+ * A spear that does damage.
  */
 UCLASS()
 class SUNRISE_API ASunriseSpear : public ASunriseWeapon

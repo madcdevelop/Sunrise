@@ -7,7 +7,7 @@
 #include "SunriseBomb.generated.h"
 
 /**
- * 
+ * A bomb that does damage.
  */
 UCLASS()
 class SUNRISE_API ASunriseBomb : public ASunriseWeapon

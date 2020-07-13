@@ -7,7 +7,7 @@
 #include "SunriseWand.generated.h"
 
 /**
- * 
+ * A wand that does damage from ranged.
  */
 UCLASS()
 class SUNRISE_API ASunriseWand : public ASunriseWeapon

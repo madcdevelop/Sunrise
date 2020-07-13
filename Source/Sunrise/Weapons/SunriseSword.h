@@ -7,6 +7,9 @@
 #include "SunriseWeapon.h"
 #include "SunriseSword.generated.h"
 
+/**
+ * A sword that does damage.
+ */
 UCLASS()
 class SUNRISE_API ASunriseSword : public ASunriseWeapon
 {
