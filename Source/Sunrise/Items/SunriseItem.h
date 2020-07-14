@@ -6,6 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "SunriseItem.generated.h"
 
+enum Items {
+    SHIELD = 0,
+    HOOKSHOT,
+    BOOMERANG,
+    MAGICWAND
+};
+
 UCLASS()
 class SUNRISE_API ASunriseItem : public AActor
 {
@@ -21,8 +28,11 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
     int32 ItemId;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
     FString Name;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UStaticMeshComponent* Mesh;
 
 public:	
 	// Called every frame

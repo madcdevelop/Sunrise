@@ -40,6 +40,6 @@ protected:
 	int32 Damage;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-    UStaticMeshComponent* WeaponMesh;
+    UStaticMeshComponent* Mesh;
 
 };
