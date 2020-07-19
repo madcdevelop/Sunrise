@@ -28,13 +28,33 @@ public:
 
 public:
 
+	FTimerHandle CharacterTimerHandle;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Properties")
     int32 Health;
+
+	// Animations
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimationAsset* AttackAnimation;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+    float AttackAnimationTime;
+
+	virtual const bool GetIsAttacking() const { return isAttacking; };
 
 protected:
 
     // Actions
     virtual void Attack();
     virtual void Defend();
+
+	// Animations
+	virtual void StartAnimation(class UAnimationAsset* Animation, float AnimationTime);
+	virtual void EndAnimation();
+
+private:
+	
+	/* Checks whether the character is currently attacking or not. */
+    bool isAttacking;
 
 };

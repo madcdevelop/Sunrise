@@ -72,7 +72,9 @@ void ASunrisePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
     PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ASunrisePlayerCharacter::MoveRight);
 
     // Input
-    PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &ASunrisePlayerCharacter::Attack);
+    if (!GetIsAttacking())
+        PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &ASunrisePlayerCharacter::Attack);
+
     PlayerInputComponent->BindAction(TEXT("Defend"), IE_Pressed, this, &ASunrisePlayerCharacter::Defend);
     PlayerInputComponent->BindAction(TEXT("UseItem"), IE_Pressed, this, &ASunrisePlayerCharacter::UseItem);
     PlayerInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ASunrisePlayerCharacter::Interact);
@@ -124,6 +126,7 @@ void ASunrisePlayerCharacter::Attack()
     Super::Attack();
 
     UE_LOG(LogTemp, Display, TEXT("The player is attacking."));
+
 }
 
 void ASunrisePlayerCharacter::Defend()
