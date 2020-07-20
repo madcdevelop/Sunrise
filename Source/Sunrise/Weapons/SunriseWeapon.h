@@ -37,13 +37,13 @@ protected:
     int32 WeaponId;
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
     FString Name;
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
     int32 Damage;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USceneComponent* Root;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* WeaponMesh;
 
 };

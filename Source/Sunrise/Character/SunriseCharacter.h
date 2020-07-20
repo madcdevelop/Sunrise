@@ -30,7 +30,7 @@ public:
 
 	FTimerHandle CharacterTimerHandle;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Properties")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
     int32 Health;
 
 	// Animations

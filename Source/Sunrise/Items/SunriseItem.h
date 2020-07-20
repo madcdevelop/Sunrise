@@ -34,10 +34,10 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
     FString Name;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USceneComponent* Root;
 
-    UPROPERTY(EditAnywhere, Category = "Setup")
+    UPROPERTY(EditAnywhere, Category = "Components")
     UStaticMeshComponent* ItemMesh;
 
 };
