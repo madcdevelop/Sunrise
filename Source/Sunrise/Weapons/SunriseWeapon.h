@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "SunriseWeapon.generated.h"
 
 enum Weapons {
@@ -19,27 +20,30 @@ enum Weapons {
 UCLASS()
 class SUNRISE_API ASunriseWeapon : public AActor
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 public:	
-	// Sets default values for this actor's properties
-	ASunriseWeapon();
+    // Sets default values for this actor's properties
+    ASunriseWeapon();
 
     // Called every frame
-	virtual void Tick(float DeltaTime) override;
-	
+    virtual void Tick(float DeltaTime) override;
+    
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
-	int32 WeaponId;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	FString Name;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-	int32 Damage;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
+    int32 WeaponId;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+    FString Name;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+    int32 Damage;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-    UStaticMeshComponent* Mesh;
+    USceneComponent* Root;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UStaticMeshComponent* WeaponMesh;
 
 };

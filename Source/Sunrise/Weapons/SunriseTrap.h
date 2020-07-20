@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "SunriseWeapon.h"
+#include "Components/BoxComponent.h"
+
 #include "SunriseTrap.generated.h"
 
 /**
@@ -14,7 +16,7 @@ class SUNRISE_API ASunriseTrap : public ASunriseWeapon
 {
 	GENERATED_BODY()
 	
-    public:	
+public:	
 	// Sets default values for this actor's properties
 	ASunriseTrap();
 
@@ -24,5 +26,8 @@ class SUNRISE_API ASunriseTrap : public ASunriseWeapon
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+    UBoxComponent* CollisionMesh;
 
 };

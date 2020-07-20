@@ -16,26 +16,28 @@ enum Items {
 UCLASS()
 class SUNRISE_API ASunriseItem : public AActor
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+    
 public:	
-	// Sets default values for this actor's properties
-	ASunriseItem();
+    // Sets default values for this actor's properties
+    ASunriseItem();
+
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
     int32 ItemId;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
     FString Name;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-    UStaticMeshComponent* Mesh;
+    USceneComponent* Root;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+    UPROPERTY(EditAnywhere, Category = "Setup")
+    UStaticMeshComponent* ItemMesh;
 
 };
