@@ -24,9 +24,11 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 
+    MaxCamArmLength = 800.0f;
+    MinCamArmLength = 400.0f;
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
     SpringArmComponent->SetupAttachment(RootComponent);
-    SpringArmComponent->TargetArmLength = 600.0f;
+    SpringArmComponent->TargetArmLength = MaxCamArmLength;
     SpringArmComponent->bUsePawnControlRotation = true;
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
@@ -53,7 +55,7 @@ void ASunrisePlayerCharacter::Tick(float DeltaTime)
 
     ZoomFactor = FMath::Clamp<float>(ZoomFactor, 0.0f, 1.0f);
     CameraComponent->FieldOfView = FMath::Lerp<float>(90.0f, 70.0f, ZoomFactor);
-    SpringArmComponent->TargetArmLength = FMath::Lerp<float>(600.0f, 400.0f, ZoomFactor);
+    SpringArmComponent->TargetArmLength = FMath::Lerp<float>(MaxCamArmLength, MinCamArmLength, ZoomFactor);
 }
 
 // Called to bind functionality to input
