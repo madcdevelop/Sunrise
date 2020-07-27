@@ -45,10 +45,15 @@ protected:
     
     // Input variables
     float ZoomFactor;
+    
+    // The max length of the camera arm. 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
     float MaxCamArmLength;
+    
+    // The min length of the camera arm. 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
     float MinCamArmLength;
+
     bool bZoomingIn;
     bool bZoomingOut;
 
