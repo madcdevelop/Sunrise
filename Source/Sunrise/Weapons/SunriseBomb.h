@@ -21,18 +21,19 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
+    UFUNCTION()
+    void Explode();
+
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
 public:
 
-    FTimerHandle BombTimerHandle;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-    float MaxFuseTime;
+    float BombFuseTime;
 
-    UFUNCTION()
-    void Explode();
-	
+private:
+
+    FTimerHandle BombTimerHandle;
 };

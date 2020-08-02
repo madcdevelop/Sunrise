@@ -12,7 +12,7 @@ ASunriseBomb::ASunriseBomb()
     WeaponId = BOMB;
     Name = "Bomb";
     Damage = 150;
-    MaxFuseTime = 5.0f;
+    BombFuseTime = 5.0f;
 
 }
 
@@ -21,7 +21,7 @@ void ASunriseBomb::BeginPlay()
 {
     Super::BeginPlay();
 
-    GetWorld()->GetTimerManager().SetTimer(BombTimerHandle, this, &ASunriseBomb::Explode, MaxFuseTime, false);
+    GetWorld()->GetTimerManager().SetTimer(BombTimerHandle, this, &ASunriseBomb::Explode, BombFuseTime, false);
 
 }
 
@@ -39,6 +39,6 @@ void ASunriseBomb::Explode()
     this->Destroy();
     GetWorld()->GetTimerManager().ClearTimer(BombTimerHandle);
     GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-    UE_LOG(LogTemp, Display, TEXT("The bomb has exploded."));
+    UE_LOG(LogTemp, Display, TEXT("The bomb has exploded!"));
 }
 

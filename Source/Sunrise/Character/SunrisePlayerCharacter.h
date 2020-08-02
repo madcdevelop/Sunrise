@@ -24,11 +24,6 @@ public:
     // Sets default values for this character's properties
     ASunrisePlayerCharacter();
 
-protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
-
-public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
@@ -36,26 +31,8 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-    class USpringArmComponent* SpringArmComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-    class UCameraComponent* CameraComponent;
-    
-    // Input variables
-    float ZoomFactor;
-    
-    // The max length of the camera arm. 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-    float MaxCamArmLength;
-    
-    // The min length of the camera arm. 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-    float MinCamArmLength;
-
-    bool bZoomingIn;
-    bool bZoomingOut;
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
     // Input functions
     void ZoomCamera(float AxisValue);
@@ -67,5 +44,27 @@ protected:
     void Defend() override;
     void UseItem();
     void Interact();
+
+protected:
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+    class USpringArmComponent* SpringArmComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+    class UCameraComponent* CameraComponent;
+    
+    /* The max length of the camera arm.*/
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+    float MaxCamArmLength;
+    
+    /* The min length of the camera arm. */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+    float MinCamArmLength;
+
+    // Input variables
+    float ZoomFactor;
+    bool bZoomingIn;
+    bool bZoomingOut;
+
 
 };

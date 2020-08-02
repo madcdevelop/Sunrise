@@ -15,34 +15,17 @@ public:
 	// Sets default values for this character's properties
 	ASunriseCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-public:
-
-	FTimerHandle CharacterTimerHandle;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
-    int32 Health;
-
-	// Animations
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-	class UAnimationAsset* AttackAnimation;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
-    float AttackAnimationTime;
-
 	virtual const bool GetIsAttacking() const { return isAttacking; };
 
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
     // Actions
     virtual void Attack();
@@ -51,6 +34,21 @@ protected:
 	// Animations
 	virtual void StartAnimation(class UAnimationAsset* Animation, float AnimationTime);
 	virtual void EndAnimation();
+
+public:
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
+    int32 Health;
+
+
+	// Animations
+	FTimerHandle CharacterTimerHandle;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	class UAnimationAsset* AttackAnimation;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+    float AttackAnimationTime;
 
 private:
 	
