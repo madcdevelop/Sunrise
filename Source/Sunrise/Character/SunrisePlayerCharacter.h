@@ -14,7 +14,9 @@
 #include "SunriseCharacter.h"
 #include "SunrisePlayerCharacter.generated.h"
 
-
+/**
+ *  The character that the player controls.
+ */
 UCLASS()
 class SUNRISE_API ASunrisePlayerCharacter : public ASunriseCharacter
 {

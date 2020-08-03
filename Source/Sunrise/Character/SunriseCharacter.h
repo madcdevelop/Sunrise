@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "SunriseCharacter.generated.h"
 
+/**
+ *  The base character class.
+ */
 UCLASS(blueprintable)
 class SUNRISE_API ASunriseCharacter : public ACharacter
 {
@@ -50,9 +53,10 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
     float AttackAnimationTime;
 
-private:
+protected:
 	
 	/* Checks whether the character is currently attacking or not. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
     bool isAttacking;
 
 };
