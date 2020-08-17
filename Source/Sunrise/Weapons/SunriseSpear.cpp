@@ -12,7 +12,7 @@ ASunriseSpear::ASunriseSpear()
     // Setup
     WeaponId = SPEAR;
     Name = "Spear";
-    Damage = 75;
+    Damage = 75.0f;
 
 }
 

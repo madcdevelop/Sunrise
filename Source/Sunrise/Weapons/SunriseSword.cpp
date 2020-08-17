@@ -12,7 +12,7 @@ ASunriseSword::ASunriseSword()
     // Setup
     WeaponId = SWORD;
     Name = "Sword";
-    Damage = 50;
+    Damage = 50.0f;
 
 }
 

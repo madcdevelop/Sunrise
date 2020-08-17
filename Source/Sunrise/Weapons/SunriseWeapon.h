@@ -40,7 +40,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
     FString Name;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
-    int32 Damage;
+    float Damage;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USceneComponent* Root;

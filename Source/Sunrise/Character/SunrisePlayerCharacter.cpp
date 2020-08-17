@@ -11,7 +11,7 @@
 ASunrisePlayerCharacter::ASunrisePlayerCharacter()
 {
     // Character Defaults
-    Health = 100;
+    Health = 400.0f;
 
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;

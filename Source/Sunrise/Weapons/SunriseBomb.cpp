@@ -11,7 +11,7 @@ ASunriseBomb::ASunriseBomb()
     // Setup
     WeaponId = BOMB;
     Name = "Bomb";
-    Damage = 150;
+    Damage = 150.0f;
     BombFuseTime = 5.0f;
 
 }

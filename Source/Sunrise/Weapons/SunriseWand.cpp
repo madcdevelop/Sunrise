@@ -12,7 +12,7 @@ ASunriseWand::ASunriseWand()
     // Setup
     WeaponId = WAND;
     Name = "Wand";
-    Damage = 25;
+    Damage = 25.0f;
 }
 
 // Called when the game starts or when spawned

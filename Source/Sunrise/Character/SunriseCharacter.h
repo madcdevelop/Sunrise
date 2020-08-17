@@ -41,10 +41,8 @@ protected:
 public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
-    int32 Health;
+    float Health;
 
-
-	// Animations
 	FTimerHandle CharacterTimerHandle;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
