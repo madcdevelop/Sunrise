@@ -26,6 +26,10 @@ public:
 
 	virtual const bool GetIsAttacking() const { return isAttacking; };
 
+	virtual const float GetHealth() const { return Health; };
+
+	virtual void SetHealth(float CurrentHealth) { Health = CurrentHealth; };
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,9 +44,6 @@ protected:
 
 public:
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
-    float Health;
-
 	FTimerHandle CharacterTimerHandle;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
@@ -53,8 +54,15 @@ public:
 
 protected:
 	
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
+    float Health;
+
 	/* Checks whether the character is currently attacking or not. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
     bool isAttacking;
+
+	/* The weapon the character is using */
+	UPROPERTY(EditAnywhere, Category = "Weapon")
+	TSubclassOf<class ASunriseWeapon> WeaponClass;
 
 };

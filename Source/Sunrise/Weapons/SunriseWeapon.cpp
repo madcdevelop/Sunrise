@@ -20,12 +20,15 @@ ASunriseWeapon::ASunriseWeapon()
     {
         WeaponMesh->SetupAttachment(Root);
     }
+
 }
 
 // Called when the game starts or when spawned
 void ASunriseWeapon::BeginPlay()
 {
     Super::BeginPlay();
+
+    OnActorBeginOverlap.AddDynamic(this, &ASunriseWeapon::OnOverlap);
     
 }
 
@@ -33,6 +36,21 @@ void ASunriseWeapon::BeginPlay()
 void ASunriseWeapon::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+}
+
+void ASunriseWeapon::OnOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
+{
+    ASunriseAICharacter* AICharacter = Cast<ASunriseAICharacter>(OtherActor);
+    if (AICharacter) {
+        FDamageEvent WeaponDamageEvent;
+        AController* PlayerController = GetInstigatorController();
+
+        float WeaponDamage = AICharacter->TakeDamage(Damage, WeaponDamageEvent, PlayerController, this);
+        AICharacter->SetHealth(AICharacter->GetHealth() - WeaponDamage);
+
+        UE_LOG(LogTemp, Display, TEXT("The zombie's health is %f"), AICharacter->GetHealth());
+    }
 
 }
 
