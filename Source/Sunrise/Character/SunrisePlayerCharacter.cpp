@@ -73,9 +73,11 @@ void ASunrisePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
     if (!GetIsAttacking())
         PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &ASunrisePlayerCharacter::Attack);
 
-    PlayerInputComponent->BindAction(TEXT("Defend"), IE_Pressed, this, &ASunrisePlayerCharacter::Defend);
+    PlayerInputComponent->BindAction(TEXT("Defend"), IE_Pressed, this, &ASunrisePlayerCharacter::StartDefend);
+    PlayerInputComponent->BindAction(TEXT("Defend"), IE_Released, this, &ASunrisePlayerCharacter::EndDefend);
     PlayerInputComponent->BindAction(TEXT("UseItem"), IE_Pressed, this, &ASunrisePlayerCharacter::UseItem);
     PlayerInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ASunrisePlayerCharacter::Interact);
+    
 }
 
 
@@ -127,11 +129,16 @@ void ASunrisePlayerCharacter::Attack()
 
 }
 
-void ASunrisePlayerCharacter::Defend()
+void ASunrisePlayerCharacter::StartDefend()
 {
-    Super::Defend();
+    Super::StartDefend();
 
     UE_LOG(LogTemp, Display, TEXT("The player is defending."));
+}
+
+void ASunrisePlayerCharacter::EndDefend()
+{
+    Super::EndDefend();
 }
 
 void ASunrisePlayerCharacter::UseItem()

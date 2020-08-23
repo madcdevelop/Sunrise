@@ -26,22 +26,24 @@ public:
 
 	virtual const bool GetIsAttacking() const { return isAttacking; };
 
+	virtual const float GetHealth() const { return Health; };
+
+	virtual void SetHealth(float CurrentHealth) { Health = CurrentHealth; };
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
     // Actions
     virtual void Attack();
-    virtual void Defend();
+    virtual void StartDefend();
+	virtual void EndDefend();
 
 	// Animations
 	virtual void StartAnimation(class UAnimationAsset* Animation, float AnimationTime);
 	virtual void EndAnimation();
 
 public:
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
-    float Health;
 
 	FTimerHandle CharacterTimerHandle;
 
@@ -51,8 +53,14 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
     float AttackAnimationTime;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    class UAnimationAsset* DefendAnimation;
+
 protected:
 	
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
+    float Health;
+
 	/* Checks whether the character is currently attacking or not. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
     bool isAttacking;

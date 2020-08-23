@@ -43,7 +43,9 @@ protected:
 
     // Actions
     void Attack() override;
-    void Defend() override;
+    void StartDefend() override;
+    void EndDefend() override;
+
     void UseItem();
     void Interact();
 

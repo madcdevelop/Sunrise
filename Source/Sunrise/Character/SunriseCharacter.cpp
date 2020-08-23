@@ -42,9 +42,16 @@ void ASunriseCharacter::Attack()
     StartAnimation(AttackAnimation, AttackAnimationTime);
 }
 
-void ASunriseCharacter::Defend()
+void ASunriseCharacter::StartDefend()
 {
-	
+    GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+    GetMesh()->SetAnimation(DefendAnimation);
+    GetMesh()->Play(false);
+}
+
+void ASunriseCharacter::EndDefend()
+{
+    GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 }
 
 void ASunriseCharacter::StartAnimation(class UAnimationAsset* Animation, float AnimationTime)
