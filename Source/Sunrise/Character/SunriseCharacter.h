@@ -36,7 +36,8 @@ protected:
 
     // Actions
     virtual void Attack();
-    virtual void Defend();
+    virtual void StartDefend();
+	virtual void EndDefend();
 
 	// Animations
 	virtual void StartAnimation(class UAnimationAsset* Animation, float AnimationTime);
@@ -51,6 +52,9 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
     float AttackAnimationTime;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    class UAnimationAsset* DefendAnimation;
 
 protected:
 	
