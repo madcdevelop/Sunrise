@@ -2,6 +2,9 @@
 
 
 #include "SunriseWeapon.h"
+#include "../Character/SunriseAICharacter.h"
+#include "../Character/SunrisePlayerCharacter.h"
+#include "../Classes/Kismet/GameplayStatics.h"
 
 // Sets default values
 ASunriseWeapon::ASunriseWeapon()
@@ -42,14 +45,16 @@ void ASunriseWeapon::Tick(float DeltaTime)
 void ASunriseWeapon::OnOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
 {
     ASunriseAICharacter* AICharacter = Cast<ASunriseAICharacter>(OtherActor);
-    if (AICharacter) {
+    ASunrisePlayerCharacter* PlayerCharacter = Cast<ASunrisePlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    
+    if (AICharacter && PlayerCharacter && PlayerCharacter->GetIsAttacking()) {
         FDamageEvent WeaponDamageEvent;
         AController* PlayerController = GetInstigatorController();
 
         float WeaponDamage = AICharacter->TakeDamage(Damage, WeaponDamageEvent, PlayerController, this);
         AICharacter->SetHealth(AICharacter->GetHealth() - WeaponDamage);
 
-        UE_LOG(LogTemp, Display, TEXT("The zombie's health is %f"), AICharacter->GetHealth());
+        UE_LOG(LogTemp, Display, TEXT("The character's health is %f"), AICharacter->GetHealth());
     }
 
 }

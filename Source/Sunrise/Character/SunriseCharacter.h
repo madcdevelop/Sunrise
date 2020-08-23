@@ -61,8 +61,4 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animation")
     bool isAttacking;
 
-	/* The weapon the character is using */
-	UPROPERTY(EditAnywhere, Category = "Weapon")
-	TSubclassOf<class ASunriseWeapon> WeaponClass;
-
 };
