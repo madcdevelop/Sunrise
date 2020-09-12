@@ -296,3 +296,8 @@ __pycache__/
 /Source/SK_Mannequin_A_Pose_README.txt
 /Source/SK_Mannequin_T_Pose_README.txt
 /Source/UE4_MocapOnline_Tech_Notes.txt
+
+# ------------------------------
+# Visual Studio Code
+# ------------------------------
+.vscode/
