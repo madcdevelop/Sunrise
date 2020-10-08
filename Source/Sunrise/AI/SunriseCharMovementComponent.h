@@ -14,6 +14,17 @@ class SUNRISE_API USunriseCharMovementComponent : public UCharacterMovementCompo
 {
 	GENERATED_BODY()
 
+private:
+
+    UPROPERTY(EditAnywhere, Category = "Wander")
+    float WanderRadius;
+    
+    UPROPERTY(EditAnywhere, Category = "Wander")
+    float WanderDistance;
+
+    UPROPERTY(EditAnywhere, Category = "Wander")
+    float WanderJitter;
+
 public:
     USunriseCharMovementComponent();
 
@@ -21,6 +32,6 @@ public:
 
 private:
     
-    void Wander();
+    FVector2D Wander();
 	
 };
