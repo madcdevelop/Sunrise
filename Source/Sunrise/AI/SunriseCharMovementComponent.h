@@ -32,6 +32,6 @@ public:
 
 private:
     
-    FVector2D Wander();
+    FVector Wander();
 	
 };

@@ -3,6 +3,8 @@
 
 #include "SunriseCharMovementComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "../Classes/Kismet/KismetMathLibrary.h"
+
 
 USunriseCharMovementComponent::USunriseCharMovementComponent()
 {
@@ -24,25 +26,12 @@ void USunriseCharMovementComponent::TickComponent(float DeltaTime, enum ELevelTi
     // do something
 }
 
-FVector2D USunriseCharMovementComponent::Wander()
+FVector USunriseCharMovementComponent::Wander()
 {
-    // wander around
-
-    // #option 1
-    // pick a location within a certain radius around the AI current location
-    // check location within certain radius of starting spawn location
-    // go to that location
-    // once at that location repeat the process
-
-    // #option2
-    // class variables
-    //double WanderRadius;
-    //double WanderDistance;
-    //double WanderJitter;
-    // add small random vector to the target's position (RandomClamped)
+    // add small random vector to the target's position
     // Use a clamp function that returns a random value between -1 and 1
     //wanter_target=FVector2D(RandomClampled() * WanterJitter, RandomClampled() * WanterJitter);
-    FVector2D WanderTarget = FVector2D(FMath::RandRange(-1.0f, 1.0f) * WanderJitter, FMath::RandRange(-1.0f, 1.0f) * WanderJitter);
+    FVector WanderTarget = FVector(FMath::RandRange(-1.0f, 1.0f) * WanderJitter, FMath::RandRange(-1.0f, 1.0f) * WanderJitter, 0.0f);
 
     // reproject this new vector back onto a unit circle
     //WanterTarget.Normalize();
@@ -54,14 +43,16 @@ FVector2D USunriseCharMovementComponent::Wander()
 
     //move the target into a position WanderDist in front of the agent
     //FVector2D targetLocal = WanderTarget + FVector2D(WanderDistance, 0);
-    FVector2D TargetLocal = WanderTarget + FVector2D(WanderDistance, 0);
+    FVector TargetLocal = WanderTarget + FVector(WanderDistance, 0.0f, 0.0f);
 
     // project target into world space
     //FVector2D targetWorld = PointToWorldSpace(targetLocal, Vehicle->Heading(), Vehicle->Side(), Vehicle->Pos());
+    FTransform ActorTransform;
+    FVector TargetWorld = UKismetMathLibrary::TransformLocation(ActorTransform, TargetLocal);
 
     // streer toward it
     //return targetWorld - Vehicle->Pos();
-    return FVector2D(0.0f, 0.0f);
+    return TargetWorld - GetActorLocation();
 
 }
 

@@ -21,4 +21,6 @@ void ASunriseAIController::OnPossess(APawn* AIPawn)
         AIBlackboard->InitializeBlackboard(*AIBlackboard->GetBlackboardAsset());
     }
 
+    AIBehaviorTreeComp->StartTree(*AICharacter->AIBehaviorTree);
+
 }
