@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SunriseCharacter.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "SunriseAICharacter.generated.h"
 
 /**
@@ -13,5 +14,11 @@ UCLASS()
 class SUNRISE_API ASunriseAICharacter : public ASunriseCharacter
 {
 	GENERATED_BODY()
+
+
+public:
+
+    UPROPERTY(EditAnywhere, Category = "AI")
+    class UBehaviorTree* AIBehaviorTree;
 	
 };
