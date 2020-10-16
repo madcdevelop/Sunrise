@@ -14,9 +14,10 @@ class SUNRISE_API UWanderBTTaskNode : public UBTTaskNode
 {
 	GENERATED_BODY()
 
-    virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
 private:
+
+    UPROPERTY(EditAnywhere, Category = "Wander")
+    FVector WanderTarget;
 
     UPROPERTY(EditAnywhere, Category = "Wander")
     float WanderRadius;
@@ -27,7 +28,11 @@ private:
     UPROPERTY(EditAnywhere, Category = "Wander")
 	float WanderJitter;
 
+
 public:
     UWanderBTTaskNode();
+
+private:
+    virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 };
