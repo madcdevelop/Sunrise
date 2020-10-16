@@ -12,7 +12,7 @@
 UCLASS()
 class SUNRISE_API UWanderBTTaskNode : public UBTTaskNode
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 private:
 
@@ -26,7 +26,7 @@ private:
     float WanderDistance;
 
     UPROPERTY(EditAnywhere, Category = "Wander")
-	float WanderJitter;
+    float WanderJitter;
 
 
 public:
