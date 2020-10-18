@@ -28,6 +28,8 @@ private:
     UPROPERTY(EditAnywhere, Category = "Wander")
     float WanderJitter;
 
+    UPROPERTY(EditAnywhere, Category = "Wander")
+    float WanderRatio;
 
 public:
     UWanderBTTaskNode();

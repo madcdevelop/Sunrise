@@ -10,9 +10,10 @@
 
 UWanderBTTaskNode::UWanderBTTaskNode()
 {
-    WanderRadius = 100.0f;
+    WanderRadius   = 100.0f;
     WanderDistance = 200.0f;
-    WanderJitter = 20.0f;
+    WanderJitter   = 20.0f;
+    WanderRatio    = 0.4f;
 }
 
 EBTNodeResult::Type UWanderBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -20,10 +21,11 @@ EBTNodeResult::Type UWanderBTTaskNode::ExecuteTask(UBehaviorTreeComponent& Owner
     ASunriseAIController* AICon = Cast<ASunriseAIController>(OwnerComp.GetAIOwner());
     ACharacter* AIChar = AICon->GetCharacter();
 
-
     if (AICon && AIChar)
     {
-        WanderTarget = AIChar->GetActorLocation();
+        // Setup Wander Target unit circle
+        float Theta = FMath::RandRange(0.0f, 1.0f) * (PI * 2);
+        WanderTarget = FVector(WanderRadius * cos(Theta), WanderRadius * sin(Theta), 0.0f);
 
         // Add small random vector to the target's position using a random value between -1 and 1
         WanderTarget += FVector(FMath::RandRange(-1.0f, 1.0f) * WanderJitter, FMath::RandRange(-1.0f, 1.0f) * WanderJitter, 0.0f);
@@ -34,19 +36,23 @@ EBTNodeResult::Type UWanderBTTaskNode::ExecuteTask(UBehaviorTreeComponent& Owner
         // Increase the length of the vector to the same as the radius of the wander circle
         WanderTarget *= WanderRadius;
 
-        // Move the target into a position WanderDist in front of the agent
-        FVector TargetLocal = WanderTarget + FVector(WanderDistance, 0.0f, 0.0f);
+        // Move the target into a position WanderDist in front/back of the agent
+        FVector TargetLocal;
+        if(FMath::RandRange(0.0f, 1.0f) > WanderRatio)
+            TargetLocal = WanderTarget + FVector(WanderDistance, 0.0f, 0.0f);
+        else
+            TargetLocal = WanderTarget + FVector(-WanderDistance, 0.0f, 0.0f);
 
         // Project target into world space
         FTransform AITransform(AIChar->GetActorRotation(), AIChar->GetActorLocation(), AIChar->GetActorScale3D());
         FVector TargetWorld = UKismetMathLibrary::TransformLocation(AITransform, TargetLocal);
 
         // Streer toward it
-        FVector NextLocation = TargetWorld - AIChar->GetActorLocation();
+        // FVector NextLocation = TargetWorld - AIChar->GetActorLocation();
 
         // Set new location for actor
         UBlackboardComponent* BlackboardComp = AICon->GetBlackboardComponent();
-        BlackboardComp->SetValueAsVector("NextLocation", NextLocation);
+        BlackboardComp->SetValueAsVector("NextLocation", TargetWorld);
 
         return EBTNodeResult::Succeeded;
 
