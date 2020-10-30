@@ -47,9 +47,6 @@ EBTNodeResult::Type UWanderBTTaskNode::ExecuteTask(UBehaviorTreeComponent& Owner
         FTransform AITransform(AIChar->GetActorRotation(), AIChar->GetActorLocation(), AIChar->GetActorScale3D());
         FVector TargetWorld = UKismetMathLibrary::TransformLocation(AITransform, TargetLocal);
 
-        // Streer toward it
-        // FVector NextLocation = TargetWorld - AIChar->GetActorLocation();
-
         // Set new location for actor
         UBlackboardComponent* BlackboardComp = AICon->GetBlackboardComponent();
         BlackboardComp->SetValueAsVector("NextLocation", TargetWorld);
