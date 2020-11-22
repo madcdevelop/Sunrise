@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "../Classes/BehaviorTree/BlackboardComponent.h"
 #include "../Classes/BehaviorTree/BehaviorTreeComponent.h"
+#include "../Classes/Perception/AIPerceptionComponent.h"
 #include "SunriseAIController.generated.h"
 
 /**
@@ -25,7 +26,15 @@ private:
     class UBehaviorTreeComponent* AIBehaviorTreeComp;
 
 public:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    class UAIPerceptionComponent* AIPerception;
+
+
+public:
     ASunriseAIController();
+
+    UFUNCTION()
+    void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
     FORCEINLINE UBlackboardComponent* GetBlackboardComponent() const { return AIBlackboard; }
     FORCEINLINE UBehaviorTreeComponent* GetBehaviorTreeComponent() const { return AIBehaviorTreeComp; }
