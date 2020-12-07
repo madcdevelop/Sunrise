@@ -1,29 +1,29 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "PursuitBTTaskNode.h"
+
+#include "AttackBTTaskNode.h"
 #include "../SunriseAIController.h"
 #include "../../Character/SunrisePlayerCharacter.h"
 
-UPursuitBTTaskNode::UPursuitBTTaskNode()
+UAttackBTTaskNode::UAttackBTTaskNode()
 {
     BBKeyTargetPlayer.SelectedKeyName = "TargetPlayer";
 }
 
-EBTNodeResult::Type UPursuitBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UAttackBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     ASunriseAIController* AICon = Cast<ASunriseAIController>(OwnerComp.GetAIOwner());
     UBlackboardComponent* BlackboardComp = AICon->GetBlackboardComponent();
 
     if(AICon)
     {
-        UObject* TargetObject = BlackboardComp->GetValueAsObject(BBKeyTargetPlayer.SelectedKeyName);
-        ASunrisePlayerCharacter* TargetPlayer = Cast<ASunrisePlayerCharacter>(TargetObject);
-        AICon->MoveToActor(TargetPlayer);
+        // call attack function
         return EBTNodeResult::Succeeded;
     }
     else
     {
-        return EBTNodeResult::Failed;
+        return EBTNodeResult::Failed;    
     }
     
+
 }
