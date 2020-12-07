@@ -7,6 +7,9 @@
 UPursuitBTTaskNode::UPursuitBTTaskNode()
 {
     BBKeyTargetPlayer.SelectedKeyName = "TargetPlayer";
+    AcceptenceRadius = 100.0f;
+    AllowStrafe = false;
+    StopOnOverlap = true;
 }
 
 EBTNodeResult::Type UPursuitBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -18,12 +21,11 @@ EBTNodeResult::Type UPursuitBTTaskNode::ExecuteTask(UBehaviorTreeComponent& Owne
     {
         UObject* TargetObject = BlackboardComp->GetValueAsObject(BBKeyTargetPlayer.SelectedKeyName);
         ASunrisePlayerCharacter* TargetPlayer = Cast<ASunrisePlayerCharacter>(TargetObject);
-        AICon->MoveToActor(TargetPlayer);
+        EPathFollowingRequestResult::Type Result = AICon->MoveToActor(TargetPlayer, AcceptenceRadius, StopOnOverlap, true);
         return EBTNodeResult::Succeeded;
     }
     else
     {
         return EBTNodeResult::Failed;
     }
-    
 }

@@ -1,17 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AttackBTTaskNode.h"
+#include "InRangeBTService.h"
 #include "../SunriseAIController.h"
 #include "../../Character/SunriseAICharacter.h"
 #include "../../Character/SunrisePlayerCharacter.h"
+#include "Math/Vector.h"
 
-UAttackBTTaskNode::UAttackBTTaskNode()
+UInRangeBTService::UInRangeBTService()
 {
     BBKeyTargetPlayer.SelectedKeyName = "TargetPlayer";
+    BBMeleeRange.SelectedKeyName = "PlayerIsInMeleeRange";
+    MeleeRange = 500.0f;
 }
 
-EBTNodeResult::Type UAttackBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+void UInRangeBTService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
     ASunriseAIController* AICon = Cast<ASunriseAIController>(OwnerComp.GetAIOwner());
     UBlackboardComponent* BlackboardComp = AICon->GetBlackboardComponent();
@@ -23,21 +26,13 @@ EBTNodeResult::Type UAttackBTTaskNode::ExecuteTask(UBehaviorTreeComponent& Owner
 
         if(PlayerChar)
         {
-            ACharacter* AIChar = AICon->GetCharacter();
-            ASunriseAICharacter* SunriseAIChar = Cast<ASunriseAICharacter>(AIChar);
-            SunriseAIChar->Attack();
+            FVector AILocation = AICon->GetCharacter()->GetActorLocation();
+            FVector PlayerLocation = PlayerChar->GetActorLocation();
 
-            return EBTNodeResult::Succeeded;
-        }
-        else
-        {
-            return EBTNodeResult::Failed;    
+            float Diff = FVector::Distance(AILocation, PlayerLocation);
+
+            if(Diff <= MeleeRange) 
+                BlackboardComp->SetValueAsBool(BBMeleeRange.SelectedKeyName, true);
         }
     }
-    else
-    {
-        return EBTNodeResult::Failed;    
-    }
-    
-
 }
