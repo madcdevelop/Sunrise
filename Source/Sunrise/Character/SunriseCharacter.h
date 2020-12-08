@@ -30,12 +30,14 @@ public:
 
 	virtual void SetHealth(float CurrentHealth) { Health = CurrentHealth; };
 
+    // Actions
+    virtual void Attack();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
     // Actions
-    virtual void Attack();
     virtual void StartDefend();
 	virtual void EndDefend();
 

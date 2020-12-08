@@ -32,6 +32,8 @@ public:
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    void Attack() override;
+    
 protected:
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -42,7 +44,6 @@ protected:
     void MoveRight(float AxisValue);
 
     // Actions
-    void Attack() override;
     void StartDefend() override;
     void EndDefend() override;
 

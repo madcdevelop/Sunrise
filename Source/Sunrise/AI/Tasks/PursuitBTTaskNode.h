@@ -20,6 +20,15 @@ private:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector BBKeyTargetPlayer;
 
+    UPROPERTY(EditAnywhere, Category = "Node")
+    float AcceptenceRadius;
+
+    UPROPERTY(EditAnywhere, Category = "Node")
+    bool AllowStrafe;
+
+    UPROPERTY(EditAnywhere, Category = "Node")
+    bool StopOnOverlap;
+
 public:
     UPursuitBTTaskNode();
 

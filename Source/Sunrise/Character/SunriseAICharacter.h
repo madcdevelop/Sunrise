@@ -20,5 +20,10 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "AI")
     class UBehaviorTree* AIBehaviorTree;
-	
+
+public:
+    ASunriseAICharacter();
+
+    // Actions
+    void Attack() override;
 };
