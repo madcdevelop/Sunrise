@@ -2,10 +2,11 @@
 
 
 #include "SunrisePlayerCharacter.h"
+#include "SunriseAICharacter.h"
+#include "../Weapons/SunriseWeapon.h"
 
 #include "Engine/GameEngine.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
 
 // Sets default values
 ASunrisePlayerCharacter::ASunrisePlayerCharacter()
@@ -37,6 +38,8 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
 void ASunrisePlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    OnActorBeginOverlap.AddDynamic(this, &ASunrisePlayerCharacter::OnBeginOverlap);
 }
 
 // Called every frame
@@ -149,4 +152,38 @@ void ASunrisePlayerCharacter::UseItem()
 void ASunrisePlayerCharacter::Interact()
 {
     UE_LOG(LogTemp, Display, TEXT("The player is interacting."));
+}
+
+void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
+{
+    ASunriseWeapon* Weapon = Cast<ASunriseWeapon>(OtherActor);
+
+    if(Weapon){
+
+        ASunriseAICharacter* AIChar = Cast<ASunriseAICharacter>(Weapon->GetAttachParentActor());
+        if(AIChar && AIChar->GetIsAttacking()){
+
+            FDamageEvent WeaponDamageEvent;
+            AController* AICon = AIChar->GetInstigatorController();
+
+            float WeaponDamage = TakeDamage(Weapon->GetDamage(), WeaponDamageEvent, AICon, Weapon);
+            SetHealth(GetHealth() - WeaponDamage);
+
+            GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Weapon hit character %s"), *MyOverlappedActor->GetName()));
+            GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("The %s character's health is %f"), *this->GetName(), GetHealth()));
+
+            if(GetHealth() <= 0.0f)
+            {
+                
+                TArray<class AActor*> AttachedActors;
+                GetAttachedActors(AttachedActors);
+                for (auto Actor: AttachedActors)
+                {
+                    Actor->Destroy();
+                }
+
+                Destroy();
+            }
+        }
+    }
 }
