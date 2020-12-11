@@ -75,6 +75,7 @@ void ASunriseCharacter::EndAnimation()
 
 void ASunriseCharacter::OnDeath()
 {
+    SetActorEnableCollision(true);
     TArray<class AActor*> AttachedActors;
     GetAttachedActors(AttachedActors);
     for (auto Actor: AttachedActors)

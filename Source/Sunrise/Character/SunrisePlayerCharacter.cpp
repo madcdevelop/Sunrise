@@ -178,6 +178,7 @@ void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* 
             GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("The %s character's health is %f"), *this->GetName(), GetHealth()));
 
             if(GetHealth() <= 0.0f){
+                SetActorEnableCollision(false);
                 StartAnimation(DeathAnimation, DeathAnimationTime);
                 GetWorld()->GetTimerManager().SetTimer(CharacterTimerHandle, this, &ASunrisePlayerCharacter::OnDeath, DeathAnimationTime, false);
             }
