@@ -21,11 +21,17 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
     float AttackAnimationTime;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")
+    float DeathAnimationTime;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	class UAnimationAsset* AttackAnimation;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
     class UAnimationAsset* DefendAnimation;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    class UAnimationAsset* DeathAnimation;
 
 protected:
 	
@@ -67,6 +73,6 @@ protected:
 	virtual void StartAnimation(class UAnimationAsset* Animation, float AnimationTime);
 	virtual void EndAnimation();
 
-
+    virtual void OnDeath();
 
 };

@@ -71,6 +71,8 @@ protected:
     void UseItem();
     void Interact();
 
+    virtual void OnDeath() override;
+    
 private:
     UFUNCTION()
     void OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor);

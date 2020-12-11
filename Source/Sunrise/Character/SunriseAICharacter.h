@@ -31,8 +31,11 @@ protected:
     // Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+    virtual void OnDeath() override;
+    
 private:
     UFUNCTION()
     void OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor);
+
 
 };

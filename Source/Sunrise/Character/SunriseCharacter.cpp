@@ -9,6 +9,7 @@ ASunriseCharacter::ASunriseCharacter()
 	// Defaults
     isAttacking = false;
     AttackAnimationTime = 1.0f;
+    DeathAnimationTime = 1.0f;
 
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -39,7 +40,11 @@ void ASunriseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void ASunriseCharacter::Attack()
 {
-    StartAnimation(AttackAnimation, AttackAnimationTime);
+    if (!GetIsAttacking())
+    {
+        isAttacking = true;
+        StartAnimation(AttackAnimation, AttackAnimationTime);
+    }
 }
 
 void ASunriseCharacter::StartDefend()
@@ -56,19 +61,25 @@ void ASunriseCharacter::EndDefend()
 
 void ASunriseCharacter::StartAnimation(class UAnimationAsset* Animation, float AnimationTime)
 {
-    if (!GetIsAttacking())
-    {
-        isAttacking = true;
         GetMesh()->SetAnimationMode(EAnimationMode::AnimationSingleNode);
         GetMesh()->SetAnimation(Animation);
         GetMesh()->Play(false);
         GetWorld()->GetTimerManager().SetTimer(CharacterTimerHandle, this, &ASunriseCharacter::EndAnimation, AnimationTime, false);
-    }
-
 }
 
 void ASunriseCharacter::EndAnimation()
 {
     GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-    isAttacking = false;
+    if(isAttacking) isAttacking = false;
+}
+
+void ASunriseCharacter::OnDeath()
+{
+    TArray<class AActor*> AttachedActors;
+    GetAttachedActors(AttachedActors);
+    for (auto Actor: AttachedActors)
+    {
+        Actor->Destroy();
+    }
+    Destroy();
 }

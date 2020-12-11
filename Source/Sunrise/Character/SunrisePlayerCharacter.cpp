@@ -154,6 +154,11 @@ void ASunrisePlayerCharacter::Interact()
     UE_LOG(LogTemp, Display, TEXT("The player is interacting."));
 }
 
+void ASunrisePlayerCharacter::OnDeath()
+{
+    Super::OnDeath();
+}
+
 void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
 {
     ASunriseWeapon* Weapon = Cast<ASunriseWeapon>(OtherActor);
@@ -172,18 +177,11 @@ void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* 
             GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Weapon hit character %s"), *MyOverlappedActor->GetName()));
             GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("The %s character's health is %f"), *this->GetName(), GetHealth()));
 
-            if(GetHealth() <= 0.0f)
-            {
-                
-                TArray<class AActor*> AttachedActors;
-                GetAttachedActors(AttachedActors);
-                for (auto Actor: AttachedActors)
-                {
-                    Actor->Destroy();
-                }
-
-                Destroy();
+            if(GetHealth() <= 0.0f){
+                StartAnimation(DeathAnimation, DeathAnimationTime);
+                GetWorld()->GetTimerManager().SetTimer(CharacterTimerHandle, this, &ASunrisePlayerCharacter::OnDeath, DeathAnimationTime, false);
             }
+            
         }
     }
 }
