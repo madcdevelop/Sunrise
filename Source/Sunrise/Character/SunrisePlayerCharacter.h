@@ -22,6 +22,27 @@ class SUNRISE_API ASunrisePlayerCharacter : public ASunriseCharacter
 {
     GENERATED_BODY()
 
+protected:
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+    class USpringArmComponent* SpringArmComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+    class UCameraComponent* CameraComponent;
+    
+    /* The max length of the camera arm.*/
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+    float MaxCamArmLength;
+    
+    /* The min length of the camera arm. */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+    float MinCamArmLength;
+
+    // Input variables
+    float ZoomFactor;
+    bool bZoomingIn;
+    bool bZoomingOut;
+
 public:
     // Sets default values for this character's properties
     ASunrisePlayerCharacter();
@@ -50,26 +71,10 @@ protected:
     void UseItem();
     void Interact();
 
-protected:
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-    class USpringArmComponent* SpringArmComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-    class UCameraComponent* CameraComponent;
+    virtual void OnDeath() override;
     
-    /* The max length of the camera arm.*/
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-    float MaxCamArmLength;
-    
-    /* The min length of the camera arm. */
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-    float MinCamArmLength;
-
-    // Input variables
-    float ZoomFactor;
-    bool bZoomingIn;
-    bool bZoomingOut;
-
+private:
+    UFUNCTION()
+    void OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor);
 
 };

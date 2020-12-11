@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-
 #include "SunriseWeapon.generated.h"
 
 enum Weapons {
@@ -21,28 +20,15 @@ UCLASS()
 class SUNRISE_API ASunriseWeapon : public AActor
 {
     GENERATED_BODY()
-    
-public:	
-    // Sets default values for this actor's properties
-    ASunriseWeapon();
-
-    // Called every frame
-    virtual void Tick(float DeltaTime) override;
-    
-    //
-    UFUNCTION()
-    virtual void OnOverlap(AActor* MyOverlappedActor, AActor* OtherActor);
-
-protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
 
 protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
     int32 WeaponId;
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
     FString Name;
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
     float Damage;
 
@@ -51,5 +37,19 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UStaticMeshComponent* WeaponMesh;
+
+public:	
+    // Sets default values for this actor's properties
+    ASunriseWeapon();
+
+    // Called every frame
+    virtual void Tick(float DeltaTime) override;
+
+    FORCEINLINE float   GetDamage() const { return Damage; }
+    FORCEINLINE FString GetName()   const { return Name; }
+    
+protected:
+    // Called when the game starts or when spawned
+    virtual void BeginPlay() override;
 
 };

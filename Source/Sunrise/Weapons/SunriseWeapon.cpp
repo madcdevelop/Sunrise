@@ -30,32 +30,10 @@ ASunriseWeapon::ASunriseWeapon()
 void ASunriseWeapon::BeginPlay()
 {
     Super::BeginPlay();
-
-    OnActorBeginOverlap.AddDynamic(this, &ASunriseWeapon::OnOverlap);
-    
 }
 
 // Called every frame
 void ASunriseWeapon::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-
 }
-
-void ASunriseWeapon::OnOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
-{
-    ASunriseAICharacter* AICharacter = Cast<ASunriseAICharacter>(OtherActor);
-    ASunrisePlayerCharacter* PlayerCharacter = Cast<ASunrisePlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    
-    if (AICharacter && PlayerCharacter && PlayerCharacter->GetIsAttacking()) {
-        FDamageEvent WeaponDamageEvent;
-        AController* PlayerController = GetInstigatorController();
-
-        float WeaponDamage = AICharacter->TakeDamage(Damage, WeaponDamageEvent, PlayerController, this);
-        AICharacter->SetHealth(AICharacter->GetHealth() - WeaponDamage);
-
-        UE_LOG(LogTemp, Display, TEXT("The character's health is %f"), AICharacter->GetHealth());
-    }
-
-}
-
