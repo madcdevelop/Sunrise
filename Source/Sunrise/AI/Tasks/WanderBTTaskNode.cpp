@@ -2,7 +2,7 @@
 
 
 #include "WanderBTTaskNode.h"
-#include "../SunriseAIController.h"
+#include "../../Controller/SunriseAIController.h"
 #include "../../Character/SunriseAICharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Math/UnrealMathUtility.h"

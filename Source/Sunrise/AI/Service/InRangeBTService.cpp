@@ -2,7 +2,7 @@
 
 
 #include "InRangeBTService.h"
-#include "../SunriseAIController.h"
+#include "../../Controller/SunriseAIController.h"
 #include "../../Character/SunriseAICharacter.h"
 #include "../../Character/SunrisePlayerCharacter.h"
 #include "Math/Vector.h"
