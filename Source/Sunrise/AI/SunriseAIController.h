@@ -31,7 +31,7 @@ public:
 
 
 public:
-    ASunriseAIController();
+    ASunriseAIController(const FObjectInitializer& ObjectInitializer);
 
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
