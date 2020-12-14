@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PursuitBTTaskNode.h"
-#include "../SunriseAIController.h"
+#include "../../Controller/SunriseAIController.h"
 #include "../../Character/SunrisePlayerCharacter.h"
 
 UPursuitBTTaskNode::UPursuitBTTaskNode()

@@ -4,7 +4,7 @@
 #include "../Character/SunrisePlayerCharacter.h"
 #include "../Character/SunriseAICharacter.h"
 
-ASunriseAIController::ASunriseAIController()
+ASunriseAIController::ASunriseAIController(const FObjectInitializer& ObjectInitializer)
 {
     AIBlackboard = CreateDefaultSubobject<UBlackboardComponent>(TEXT("AIBlackboard"));
     AIBehaviorTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("AIBehaviorTree"));
@@ -24,7 +24,6 @@ void ASunriseAIController::OnPossess(APawn* AIPawn)
 
     AIBehaviorTreeComp->StartTree(*AICharacter->AIBehaviorTree);
     AIPerception->OnPerceptionUpdated.AddDynamic(this, &ASunriseAIController::OnPerceptionUpdated);
-
 }
 
 void ASunriseAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)

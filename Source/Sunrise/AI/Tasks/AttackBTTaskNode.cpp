@@ -2,7 +2,7 @@
 
 
 #include "AttackBTTaskNode.h"
-#include "../SunriseAIController.h"
+#include "../../Controller/SunriseAIController.h"
 #include "../../Character/SunriseAICharacter.h"
 #include "../../Character/SunrisePlayerCharacter.h"
 
