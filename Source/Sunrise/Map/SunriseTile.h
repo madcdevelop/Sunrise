@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Classes/Components/InstancedStaticMeshComponent.h"
 #include "SunriseTile.generated.h"
 
 /*  
@@ -13,17 +14,41 @@ UCLASS()
 class SUNRISE_API ASunriseTile : public AActor
 {
 	GENERATED_BODY()
-	
+
+public:
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 MaxX;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 MaxY;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 TileSize;
+
+private:
+    UPROPERTY(EditDefaultsOnly, Category = "Default")
+    class USceneComponent* Root;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Geometry")
+    class UInstancedStaticMeshComponent* Floor;
+    
+    UPROPERTY(EditDefaultsOnly, Category = "Geometry")
+    class UInstancedStaticMeshComponent* Wall;
+
 public:	
 	// Sets default values for this actor's properties
 	ASunriseTile();
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+    virtual void OnConstruction(const FTransform& Transform) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+private:
+    UFUNCTION(BlueprintCallable)
+    void GenerateTiles();
 };
