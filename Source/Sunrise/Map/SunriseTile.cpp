@@ -2,6 +2,8 @@
 
 
 #include "SunriseTile.h"
+#include "../Character/SunrisePlayerCharacter.h"
+#include "../Classes/GameFramework/PlayerStart.h"
 
 // Sets default values
 ASunriseTile::ASunriseTile()
@@ -52,7 +54,7 @@ void ASunriseTile::GenerateTiles()
     for(size_t i = 0; i < Area; ++i)
     {
         if(i == 0 || i == Start || i == End) TileType.Add(0);
-        else TileType.Add(1);
+        else TileType.Add(FMath::RandRange(0, 1));
     }
 
     // Spawn
@@ -65,7 +67,15 @@ void ASunriseTile::GenerateTiles()
         FVector TileLocation(X, Y, 0.0f);
         FTransform TileTransform(TileLocation);
 
-        if (Type == 0)
+        if(Start == TileIndex) 
+        {
+            Floor->AddInstance(TileTransform);
+            FActorSpawnParameters SpawnParams;
+            GetWorld()->SpawnActor<APlayerStart>(PlayerStart, TileTransform, SpawnParams);
+            ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+            PlayerChar->SetActorLocation(TileLocation);
+        }
+        else if (Type == 0)
         {
             Floor->AddInstance(TileTransform);
         }

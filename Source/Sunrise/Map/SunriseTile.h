@@ -7,6 +7,8 @@
 #include "../Classes/Components/InstancedStaticMeshComponent.h"
 #include "SunriseTile.generated.h"
 
+class APlayerStart;
+
 /*  
 *   This class is the tile that is placed in the level.
 */
@@ -24,6 +26,9 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 TileSize;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    TSubclassOf<APlayerStart> PlayerStart;
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Default")
@@ -49,6 +54,5 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-    UFUNCTION(BlueprintCallable)
     void GenerateTiles();
 };
