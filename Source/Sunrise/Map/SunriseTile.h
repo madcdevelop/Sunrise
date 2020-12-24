@@ -54,5 +54,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-    void GenerateTiles();
+    void GenerateMazeTiles();
+
+    void GenerateMazeBinaryTree();
 };
