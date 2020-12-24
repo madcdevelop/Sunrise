@@ -115,9 +115,7 @@ void ASunriseTile::GenerateMazeBinaryTree()
     if(MaxY % 2 == 0) ++MaxY;
 
     int32 Area = MaxX * MaxY;
-    int32 Start = FMath::RandRange(1, MaxY-1);
-    // TODO: Find smarter way to pick end point. Sometimes the end doesn't connect to the maze
-    int32 End   = Area - FMath::RandRange(1, MaxY-1);
+    int32 Start = FMath::RandRange(1, MaxY-2);
 
     USTRUCT()
     struct TilesArray {
@@ -177,6 +175,22 @@ void ASunriseTile::GenerateMazeBinaryTree()
         }
     }
 
+
+    // End Location
+    int32 Random = FMath::RandRange(1,MaxY-1);
+    while(true)
+    {
+        if(0 == TileType[MaxX-2][Random]) 
+        {
+            TileType[MaxX-1].Replace(Random, 0);
+            break;
+        }
+        else
+        {
+            Random = FMath::RandRange(1,MaxY-1);
+        }
+    }
+
     
     // Spawn
     int32 TileIndex = 0;
@@ -196,10 +210,6 @@ void ASunriseTile::GenerateMazeBinaryTree()
                 GetWorld()->SpawnActor<APlayerStart>(PlayerStart, TileTransform, SpawnParams);
                 ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
                 PlayerChar->SetActorLocation(TileLocation);
-            }
-            else if (End == TileIndex)
-            {
-                Floor->AddInstance(TileTransform);
             }
             else if (Type == 0)
             {
