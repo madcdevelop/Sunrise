@@ -91,8 +91,8 @@ void ASunriseTile::GenerateMazeTiles()
 void ASunriseTile::GenerateMazeBinaryTree()
 {
     /*
-    *   Binary Tree
-    *   Ref:
+    *   Binary Tree Algorithm
+    *   Reference:
     *       - https://medium.com/analytics-vidhya/maze-generations-algorithms-and-visualizations-9f5e88a3ae37
     *       - http://weblog.jamisbuck.org/2011/2/1/maze-generation-binary-tree-algorithm
     *
@@ -103,14 +103,9 @@ void ASunriseTile::GenerateMazeBinaryTree()
     *           - 1. Get if they exist, north or west neighbors.
     *           - 2. Toss a coin to connect one of them.
     *       - It is already done!
-    * 
-    *   Data Structure: None. 
-    * 
-    *   - Memory-less Maze generation algorithm.
-    *   - No limit to size of maze you can create
     */
 
-    // When either X or Y is even increase by 1 for extra wall on the end
+    // Maze generation requires odd number of tiles
     if(MaxX % 2 == 0) ++MaxX;
     if(MaxY % 2 == 0) ++MaxY;
 
@@ -136,7 +131,7 @@ void ASunriseTile::GenerateMazeBinaryTree()
     TileTypeCol.Tiles.Init(1, MaxY);
     TileType.Init(TileTypeCol, MaxX);
 
-    // if RowIndex 0 or size - 1 then skip as those are all walls
+    // if RowIndex 0 or MaxX-1 or MaxY-1 then skip as those are all walls
     for(size_t RowIndex = 1; RowIndex < MaxX; RowIndex+=2)
     {
         for(size_t ColIndex = 1; ColIndex < MaxY; ColIndex+=2)
@@ -147,13 +142,13 @@ void ASunriseTile::GenerateMazeBinaryTree()
                 continue;
             }
             // Horizontal (West)
-            else if (RowIndex-1 == 0){
+            if (RowIndex-1 == 0){
                 TileType[RowIndex].Replace(ColIndex, 0);
                 TileType[RowIndex].Replace(ColIndex-1, 0);
                 continue;
             }
             // Vertical (South)
-            else if (ColIndex-1 == 0) {
+            if (ColIndex-1 == 0) {
                 TileType[RowIndex].Replace(ColIndex, 0);
                 TileType[RowIndex-1].Replace(ColIndex, 0);
                 continue;
@@ -176,7 +171,7 @@ void ASunriseTile::GenerateMazeBinaryTree()
     }
 
 
-    // End Location
+    // End of Maze
     int32 Random = FMath::RandRange(1,MaxY-1);
     while(true)
     {
