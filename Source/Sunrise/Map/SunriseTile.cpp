@@ -28,6 +28,8 @@ ASunriseTile::ASunriseTile()
 void ASunriseTile::BeginPlay()
 {
 	Super::BeginPlay();
+
+    GenerateMazeBinaryTreeRoom();
 }
 
 // Called every frame
@@ -218,15 +220,58 @@ void ASunriseTile::GenerateMazeBinaryTree()
     }
 }
 
-void ASunriseTile::GenerateRoom(int32 LengthX, int32 LengthY)
+void ASunriseTile::GenerateMazeBinaryTreeRoom()
+{
+    /*
+    *   Binary Tree Algorithm
+    *   Reference:
+    *       - https://medium.com/analytics-vidhya/maze-generations-algorithms-and-visualizations-9f5e88a3ae37
+    *       - http://weblog.jamisbuck.org/2011/2/1/maze-generation-binary-tree-algorithm
+    *
+    *   For each step choose between two possible options
+    *       - For each cell in the grid, toss a coin to decide whether to carve a passage south or west
+    *   Steps
+    *       - For each existing cell in the grid:
+    *           - 1. Get if they exist, north or west neighbors.
+    *           - 2. Toss a coin to connect one of them.
+    *       - It is already done!
+    */
+
+    // Add walls
+    RoomMaxX += 2;
+    RoomMaxY += 2;
+    
+    int32 RoomSizeX = RoomMaxX * TileSize;
+    int32 RoomSizeY = RoomMaxY * TileSize;
+    int32 StartRoom = FMath::RandRange(1, MaxX-2);
+
+    int32 RoomIndex = 0;
+    for(size_t RowIndex = 0; RowIndex < MaxX; ++RowIndex)
+    {
+        for(size_t ColIndex = 0; ColIndex < MaxY; ++ColIndex)
+        {
+            int32 XOffset = (RoomIndex / MaxY) * RoomSizeX;
+            int32 YOffset = (RoomIndex % MaxY) * RoomSizeY;
+
+            if(RowIndex == 0 && ColIndex == StartRoom)
+            {
+                GenerateRoom(RoomMaxX, RoomMaxY, XOffset, YOffset, ERoomType::Start);
+            }
+            else
+            {
+                GenerateRoom(RoomMaxX, RoomMaxY, XOffset, YOffset, ERoomType::Default);
+            }
+            ++RoomIndex;
+        }
+    }
+
+}
+
+void ASunriseTile::GenerateRoom(int32 LengthX, int32 LengthY, int32 OffsetX, int32 OffsetY, ERoomType Type)
 {
     // Calculate half of each side X and Y to place doors
     int32 MidX = LengthX / 2;
     int32 MidY = LengthY / 2;
-
-    // For Walls
-    LengthX += 2;
-    LengthY += 2;
 
     // Go through X and Y in 2 loops to generate tiles
     int32 TileIndex = 0;
@@ -234,8 +279,8 @@ void ASunriseTile::GenerateRoom(int32 LengthX, int32 LengthY)
     {
         for(size_t ColIndex = 0; ColIndex < LengthY; ++ColIndex)
         {
-            int32 XLocation = (TileIndex / LengthY) * TileSize;
-            int32 YLocation = (TileIndex % LengthY) * TileSize;
+            int32 XLocation = (TileIndex / LengthY) * TileSize + OffsetX;
+            int32 YLocation = (TileIndex % LengthY) * TileSize + OffsetY;
             
             FVector TileLocation(XLocation, YLocation, 0.0f);
             FTransform TileTransform(TileLocation);
@@ -255,7 +300,7 @@ void ASunriseTile::GenerateRoom(int32 LengthX, int32 LengthY)
             {
                 Wall->AddInstance(TileTransform);
             }
-            else if (RowIndex == MidX && ColIndex == MidY)
+            else if (Type == ERoomType::Start && RowIndex == MidX && ColIndex == MidY)
             {
                 Floor->AddInstance(TileTransform);
                 FActorSpawnParameters SpawnParams;

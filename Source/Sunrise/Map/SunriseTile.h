@@ -9,6 +9,15 @@
 
 class APlayerStart;
 
+/** Enum defining the type of room being generated */
+UENUM()
+enum class ERoomType : uint8
+{ 
+    Start = 0,
+    End,
+    Default
+};
+
 /*  
 *   This class is the tile that is placed in the level.
 */
@@ -24,7 +33,13 @@ public:
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 MaxY;
 
-    UPROPERTY(EditAnywhere, Category = "Map")
+    UPROPERTY(EditAnywhere, Category = "Room")
+    int32 RoomMaxX;
+
+    UPROPERTY(EditAnywhere, Category = "Room")
+    int32 RoomMaxY;
+
+    UPROPERTY(EditAnywhere, Category = "Room")
     int32 TileSize;
 
     UPROPERTY(EditAnywhere, Category = "Map")
@@ -64,5 +79,8 @@ private:
     void GenerateMazeBinaryTree();
 
     UFUNCTION(BlueprintCallable)
-    void GenerateRoom(int32 X, int32 Y);
+    void GenerateMazeBinaryTreeRoom();
+
+    UFUNCTION(BlueprintCallable)
+    void GenerateRoom(int32 X, int32 Y, int32 OffsetX, int32 OffsetY, ERoomType Type = ERoomType::Default);
 };
