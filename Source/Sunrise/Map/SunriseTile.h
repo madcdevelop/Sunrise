@@ -40,6 +40,9 @@ private:
     UPROPERTY(EditDefaultsOnly, Category = "Geometry")
     class UInstancedStaticMeshComponent* Wall;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Geometry")
+    class UInstancedStaticMeshComponent* Door;
+
 public:	
 	// Sets default values for this actor's properties
 	ASunriseTile();
@@ -54,7 +57,12 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+    UFUNCTION(BlueprintCallable)
     void GenerateMazeTiles();
 
+    UFUNCTION(BlueprintCallable)
     void GenerateMazeBinaryTree();
+
+    UFUNCTION(BlueprintCallable)
+    void GenerateRoom(int32 X, int32 Y);
 };

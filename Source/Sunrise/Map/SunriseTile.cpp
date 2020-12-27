@@ -16,6 +16,7 @@ ASunriseTile::ASunriseTile()
     if (Root) RootComponent = Root;
     Floor = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Floor"));
     Wall  = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall"));
+    Door  = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Door"));
 
     // Tile Defaults
     MaxX = 5;
@@ -27,8 +28,6 @@ ASunriseTile::ASunriseTile()
 void ASunriseTile::BeginPlay()
 {
 	Super::BeginPlay();
-
-    GenerateMazeBinaryTree();
 }
 
 // Called every frame
@@ -217,4 +216,60 @@ void ASunriseTile::GenerateMazeBinaryTree()
             ++TileIndex;    
         }
     }
+}
+
+void ASunriseTile::GenerateRoom(int32 LengthX, int32 LengthY)
+{
+    // Calculate half of each side X and Y to place doors
+    int32 MidX = LengthX / 2;
+    int32 MidY = LengthY / 2;
+
+    // For Walls
+    LengthX += 2;
+    LengthY += 2;
+
+    // Go through X and Y in 2 loops to generate tiles
+    int32 TileIndex = 0;
+    for(size_t RowIndex = 0; RowIndex < LengthX; ++RowIndex)
+    {
+        for(size_t ColIndex = 0; ColIndex < LengthY; ++ColIndex)
+        {
+            int32 XLocation = (TileIndex / LengthY) * TileSize;
+            int32 YLocation = (TileIndex % LengthY) * TileSize;
+            
+            FVector TileLocation(XLocation, YLocation, 0.0f);
+            FTransform TileTransform(TileLocation);
+
+            if ((ColIndex == 0 && RowIndex == MidX) || 
+                (RowIndex == 0 && ColIndex == MidY) ||
+                (ColIndex == LengthY-1 && RowIndex == MidX) || 
+                (RowIndex == LengthX-1 && ColIndex == MidY))
+            {
+                Door->AddInstance(TileTransform);
+            }
+            else if(RowIndex == 0 || RowIndex == LengthX-1)
+            {
+                Wall->AddInstance(TileTransform);
+            }
+            else if (ColIndex == 0 || ColIndex == LengthY-1)
+            {
+                Wall->AddInstance(TileTransform);
+            }
+            else if (RowIndex == MidX && ColIndex == MidY)
+            {
+                Floor->AddInstance(TileTransform);
+                FActorSpawnParameters SpawnParams;
+                GetWorld()->SpawnActor<APlayerStart>(PlayerStart, TileTransform, SpawnParams);
+                ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+                PlayerChar->SetActorLocation(TileLocation);
+            }
+            else
+            {
+                Floor->AddInstance(TileTransform);
+            }
+            ++TileIndex;
+        }
+    }
+
+
 }
