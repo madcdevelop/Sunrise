@@ -236,32 +236,105 @@ void ASunriseTile::GenerateMazeBinaryTreeRoom()
     *           - 2. Toss a coin to connect one of them.
     *       - It is already done!
     */
+    if(MaxX % 2 == 0) ++MaxX;
+    if(MaxY % 2 == 0) ++MaxY;
+
+    int32 Area = MaxX * MaxY;
+    int32 Start = FMath::RandRange(1, MaxY-2);
+
+    USTRUCT()
+    struct RoomsArray {
+        TArray<ERoomType> Rooms;
+
+        ERoomType operator[](int32 Index) {
+            return Rooms[Index];
+        }
+
+        void Replace(int32 Index, ERoomType Type) {
+            Rooms[Index] = Type;
+        }
+    };
+
+    TArray<RoomsArray> RoomType;
+    RoomsArray RoomTypeCol;
+    
+    RoomTypeCol.Rooms.Init(ERoomType::None, MaxY);
+    RoomType.Init(RoomTypeCol, MaxX);
+
+    // if RowIndex 0 or MaxX-1 or MaxY-1 then skip as those are all walls
+    for(size_t RowIndex = 1; RowIndex < MaxX; RowIndex+=2)
+    {
+        for(size_t ColIndex = 1; ColIndex < MaxY; ColIndex+=2)
+        {
+            // Start
+            if (RowIndex-1 == 0 && ColIndex-1 == 0) {
+                RoomType[RowIndex].Replace(ColIndex, ERoomType::Default);
+                continue;
+            }
+            // Horizontal (West)
+            if (RowIndex-1 == 0){
+                RoomType[RowIndex].Replace(ColIndex, ERoomType::Default);
+                RoomType[RowIndex].Replace(ColIndex-1, ERoomType::Default);
+                continue;
+            }
+            // Vertical (South)
+            if (ColIndex-1 == 0) {
+                RoomType[RowIndex].Replace(ColIndex, ERoomType::Default);
+                RoomType[RowIndex-1].Replace(ColIndex, ERoomType::Default);
+                continue;
+            }
+            
+            int32 DiceRoll = FMath::RandRange(0, 100);
+            if (DiceRoll < 50)
+            {
+                // Horizontal (West)
+                RoomType[RowIndex].Replace(ColIndex, ERoomType::Default);
+                RoomType[RowIndex].Replace(ColIndex-1, ERoomType::Default);
+            }
+            else
+            {
+                // Vertical (South)
+                RoomType[RowIndex].Replace(ColIndex, ERoomType::Default);
+                RoomType[RowIndex-1].Replace(ColIndex, ERoomType::Default);
+            }
+        }
+    }
+
+    // End of Maze
+    while(true)
+    {
+        int32 Random = FMath::RandRange(1,MaxY-2);
+        if(ERoomType::Default == RoomType[MaxX-2][Random])
+        {
+            RoomType[MaxX-1].Replace(Random, ERoomType::Default);
+            break;
+        }
+    }
 
     // Add walls
     RoomMaxX += 2;
     RoomMaxY += 2;
-    
+
     int32 RoomSizeX = RoomMaxX * TileSize;
     int32 RoomSizeY = RoomMaxY * TileSize;
-    int32 StartRoom = FMath::RandRange(1, MaxX-2);
 
+    // Spawn
     int32 RoomIndex = 0;
-    for(size_t RowIndex = 0; RowIndex < MaxX; ++RowIndex)
+    for(const auto &Row : RoomType)
     {
-        for(size_t ColIndex = 0; ColIndex < MaxY; ++ColIndex)
-        {
+        for(const auto &Type : Row.Rooms) {
             int32 XOffset = (RoomIndex / MaxY) * RoomSizeX;
             int32 YOffset = (RoomIndex % MaxY) * RoomSizeY;
 
-            if(RowIndex == 0 && ColIndex == StartRoom)
+            if(Start == RoomIndex) 
             {
                 GenerateRoom(RoomMaxX, RoomMaxY, XOffset, YOffset, ERoomType::Start);
             }
-            else
+            else if (Type == ERoomType::Default)
             {
                 GenerateRoom(RoomMaxX, RoomMaxY, XOffset, YOffset, ERoomType::Default);
             }
-            ++RoomIndex;
+            ++RoomIndex;    
         }
     }
 
@@ -285,12 +358,13 @@ void ASunriseTile::GenerateRoom(int32 LengthX, int32 LengthY, int32 OffsetX, int
             FVector TileLocation(XLocation, YLocation, 0.0f);
             FTransform TileTransform(TileLocation);
 
+            // TODO: Change logic for doors after maze generating algorithm done
             if ((ColIndex == 0 && RowIndex == MidX) || 
                 (RowIndex == 0 && ColIndex == MidY) ||
                 (ColIndex == LengthY-1 && RowIndex == MidX) || 
                 (RowIndex == LengthX-1 && ColIndex == MidY))
             {
-                Door->AddInstance(TileTransform);
+                Floor->AddInstance(TileTransform);
             }
             else if(RowIndex == 0 || RowIndex == LengthX-1)
             {

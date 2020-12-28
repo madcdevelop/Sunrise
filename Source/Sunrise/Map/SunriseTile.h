@@ -13,8 +13,10 @@ class APlayerStart;
 UENUM()
 enum class ERoomType : uint8
 { 
-    Start = 0,
+    None = 0,
+    Start,
     End,
+    Hallway,
     Default
 };
 
