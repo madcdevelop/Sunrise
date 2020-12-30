@@ -9,6 +9,10 @@ ASunriseRoom::ASunriseRoom()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
+    // Defaults
+    MinSize = 3;
+    MaxSize = 8;
 }
 
 // Called when the game starts or when spawned
@@ -23,10 +27,10 @@ void ASunriseRoom::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile)
+void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream)
 {
-    int32 SizeX = RoomSizeX;
-    int32 SizeY = RoomSizeY;
+    int32 SizeX = Stream.RandRange(MinSize, MaxSize);
+    int32 SizeY = Stream.RandRange(MinSize, MaxSize);
 
     int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)

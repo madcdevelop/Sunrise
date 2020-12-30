@@ -19,7 +19,16 @@ public:
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 MapSizeY;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Tile")
+    UPROPERTY(EditAnywhere, Category = "Map")
+    FRandomStream Stream;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 Seed;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    bool bNewSeed;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
 
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
@@ -40,4 +49,6 @@ protected:
 
 private:
     void GenerateMap();
+
+    void DeleteMap();
 };

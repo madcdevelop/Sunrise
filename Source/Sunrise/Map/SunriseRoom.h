@@ -14,12 +14,10 @@ class SUNRISE_API ASunriseRoom : public AActor
 
 public:
     UPROPERTY(EditAnywhere, Category = "Map")
-    int32 RoomSizeX;
+    int32 MinSize;
 
     UPROPERTY(EditAnywhere, Category = "Map")
-    int32 RoomSizeY;
-
-
+    int32 MaxSize;
 
 public:	
 	// Sets default values for this actor's properties
@@ -28,7 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-    void GenerateRoom(ASunriseMapTile* Tile);
+    void GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream);
 
 protected:
 	// Called when the game starts or when spawned
