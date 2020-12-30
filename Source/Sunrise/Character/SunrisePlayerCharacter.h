@@ -38,6 +38,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
     float MinCamArmLength;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+    bool bActiveCamera;
+
     // Input variables
     float ZoomFactor;
     bool bZoomingIn;
