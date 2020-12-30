@@ -58,10 +58,39 @@ void ASunriseMap::GenerateMap()
 
         // Spawn Tile to create next room
         FActorSpawnParameters SpawnParams;
-        ASunriseMapTile* CurrentTile = GetWorld()->SpawnActor<ASunriseMapTile>(DefaultTile->GetClass(), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
-        if(CurrentTile)
+        FVector LocationOffset(0.0f, 0.0f, 0.0f);
+        
+        ASunriseMapTile* CurrentRoom = GetWorld()->SpawnActor<ASunriseMapTile>(DefaultTile->GetClass(), LocationOffset, FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+        if(CurrentRoom) DefaultRoom->GenerateRoom(CurrentRoom, Stream, LocationOffset);
+
+        if(CurrentRoom->DoorOpeningEast) 
         {
-            DefaultRoom->GenerateRoom(CurrentTile, Stream);
+            LocationOffset = CurrentRoom->DoorOpeningEast->GetComponentLocation() + FVector(0.0f, CurrentRoom->MeshSize.Y / 2.0f, 0.0f);
+            ASunriseMapTile* CurrentHallway = GetWorld()->SpawnActor<ASunriseMapTile>(DefaultTile->GetClass(), LocationOffset, FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+            if(CurrentHallway) DefaultRoom->GenerateHallwayHorizontal(CurrentHallway, Stream, LocationOffset);
         }
+
+        if(CurrentRoom->DoorOpeningNorth)
+        {
+            LocationOffset = CurrentRoom->DoorOpeningNorth->GetComponentLocation() + FVector(CurrentRoom->MeshSize.X / 2.0f, 0.0f, 0.0f);
+            ASunriseMapTile* CurrentHallway = GetWorld()->SpawnActor<ASunriseMapTile>(DefaultTile->GetClass(), LocationOffset, FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+            if(CurrentHallway) DefaultRoom->GenerateHallwayVertical(CurrentHallway, Stream, LocationOffset);
+        }
+
+        if(CurrentRoom->DoorOpeningWest) 
+        {
+            LocationOffset = CurrentRoom->DoorOpeningWest->GetComponentLocation() - FVector(0.0f, CurrentRoom->MeshSize.Y / 2.0f, 0.0f);
+            ASunriseMapTile* CurrentHallway = GetWorld()->SpawnActor<ASunriseMapTile>(DefaultTile->GetClass(), LocationOffset, FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+            if(CurrentHallway) DefaultRoom->GenerateHallwayHorizontal(CurrentHallway, Stream, LocationOffset);
+        }
+
+        if(CurrentRoom->DoorOpeningSouth)
+        {
+            LocationOffset = CurrentRoom->DoorOpeningSouth->GetComponentLocation() - FVector(CurrentRoom->MeshSize.X / 2.0f, 0.0f, 0.0f);
+            ASunriseMapTile* CurrentHallway = GetWorld()->SpawnActor<ASunriseMapTile>(DefaultTile->GetClass(), LocationOffset, FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+            if(CurrentHallway) DefaultRoom->GenerateHallwayVertical(CurrentHallway, Stream, LocationOffset);
+        }
+
+        
     }
 }

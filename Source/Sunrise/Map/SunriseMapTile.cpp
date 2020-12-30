@@ -49,13 +49,13 @@ UBoxComponent* ASunriseMapTile::CreateTraceBox(AActor* Parent, FName Name, FRota
 
     if(BoxComponent)
     {
-        BoxComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+        BoxComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
         BoxComponent->RegisterComponent();
         BoxComponent->bSelectable = true;
         BoxComponent->bEditableWhenInherited = true;
 
         BoxComponent->SetBoxExtent(Extents);
-        BoxComponent->SetRelativeTransform(Transform);
+        BoxComponent->SetWorldTransform(Transform);
         BoxComponent->SetVisibility(true);
         BoxComponent->SetHiddenInGame(true);
         return BoxComponent;
