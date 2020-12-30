@@ -75,13 +75,7 @@ protected:
 
 private:
     UFUNCTION(BlueprintCallable)
-    void GenerateMazeTiles();
-
-    UFUNCTION(BlueprintCallable)
-    void GenerateMazeBinaryTree();
-
-    UFUNCTION(BlueprintCallable)
-    void GenerateMazeBinaryTreeRoom();
+    void GenerateMapBinaryTree();
 
     UFUNCTION(BlueprintCallable)
     void GenerateRoom(int32 X, int32 Y, int32 OffsetX, int32 OffsetY, ERoomType Type = ERoomType::Default);
