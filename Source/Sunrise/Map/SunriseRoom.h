@@ -7,6 +7,16 @@
 #include "SunriseMapTile.h"
 #include "SunriseRoom.generated.h"
 
+UENUM()
+enum class Door 
+{
+    None = 0,
+    South,
+    East,
+    North,
+    West
+};
+
 UCLASS()
 class SUNRISE_API ASunriseRoom : public AActor
 {

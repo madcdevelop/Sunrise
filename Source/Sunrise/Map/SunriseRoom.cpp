@@ -31,7 +31,29 @@ void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream)
 {
     int32 SizeX = Stream.RandRange(MinSize, MaxSize);
     int32 SizeY = Stream.RandRange(MinSize, MaxSize);
+    int32 MidX = SizeX / 2;
+    int32 MidY = SizeY / 2;
 
+    // Remove a random number of doors
+    int32 DoorCount = Stream.RandRange(1, 4);
+    int32 DoorRemovalCount = 4 - DoorCount;
+
+    TArray<Door> DoorPosition;
+    DoorPosition.Add(Door::South);
+    DoorPosition.Add(Door::East);
+    DoorPosition.Add(Door::North);
+    DoorPosition.Add(Door::West);
+
+    for(size_t i = 0; i < DoorRemovalCount; ++i)
+    {
+        int32 RemoveDoor = Stream.RandRange(0, 1);
+        if(RemoveDoor == 1)
+        {
+            DoorPosition[i] = Door::None;
+        }
+    }
+
+    // Populate room with meshes
     int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)
     {
@@ -44,6 +66,36 @@ void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream)
             FVector FloorLocation(LocationX, LocationY, 0.0f);
             FTransform FloorTransform(FloorLocation);
             Tile->GenerateTile(Tile->Floor, FloorTransform);
+
+            // Add Doors
+            if(DoorCount > 0 && DoorPosition[0] == Door::South &&
+               RowIndex == 0 && ColumnIndex == MidY)
+            {
+                --DoorCount;
+                ++TileIndex;
+                continue;
+            }
+            if(DoorCount > 0 && DoorPosition[1] == Door::East &&
+               RowIndex == MidX && ColumnIndex == SizeY-1)
+            {
+                --DoorCount;
+                ++TileIndex;
+                continue;
+            }
+            if(DoorCount > 0 && DoorPosition[2] == Door::North &&
+               RowIndex == SizeX-1 && ColumnIndex == MidY) 
+            {
+                --DoorCount;
+                ++TileIndex;
+                continue;
+            }
+            if(DoorCount > 0 && DoorPosition[3] == Door::West &&
+               RowIndex == MidX && ColumnIndex == 0)
+            {
+                --DoorCount;
+                ++TileIndex;
+                continue;
+            }
 
             // Add Walls
             // Bottom
