@@ -67,36 +67,44 @@ void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream)
             FTransform FloorTransform(FloorLocation);
             Tile->GenerateTile(Tile->Floor, FloorTransform);
 
-            // Add Doors
-            if(DoorCount > 0 && DoorPosition[0] == Door::South &&
-               RowIndex == 0 && ColumnIndex == MidY)
+            if((DoorCount > 0 && RowIndex == 0       && ColumnIndex == MidY) ||     // South
+               (DoorCount > 0 && RowIndex == MidX    && ColumnIndex == SizeY-1) ||  // East
+               (DoorCount > 0 && RowIndex == SizeX-1 && ColumnIndex == MidY) ||     // North
+               (DoorCount > 0 && RowIndex == MidX    && ColumnIndex == 0))          // West
             {
+                // Add Doors
+                FName Name;
+                FVector DoorOpeningLocation;
+                FVector Extents(Tile->MeshSize.X / 2.0f, Tile->MeshSize.Y / 2.0f, 500.0f);
+                if(DoorPosition[0] == Door::South && RowIndex == 0 && ColumnIndex == MidY)
+                {
+                    DoorOpeningLocation = FVector(LocationX - (Tile->MeshSize.X * 0.5f), LocationY, 0.0f);
+                    Name = "DoorOpeningSouth";
+                    Tile->DoorOpeningSouth = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                }
+                else if(DoorPosition[1] == Door::East && RowIndex == MidX && ColumnIndex == SizeY-1)
+                {
+                    DoorOpeningLocation = FVector(LocationX, LocationY + (Tile->MeshSize.Y * 0.5f), 0.0f);
+                    Name = "DoorOpeningEast";
+                    Tile->DoorOpeningEast = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                }
+                else if(DoorPosition[2] == Door::North && RowIndex == SizeX-1 && ColumnIndex == MidY) 
+                {
+                    DoorOpeningLocation = FVector(LocationX + (Tile->MeshSize.X * 0.5f), LocationY, 0.0f);
+                    Name = "DoorOpeningNorth";
+                    Tile->DoorOpeningNorth = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                }
+                else if(DoorPosition[3] == Door::West && RowIndex == MidX && ColumnIndex == 0)
+                {
+                    DoorOpeningLocation = FVector(LocationX, LocationY - (Tile->MeshSize.Y * 0.5f), 0.0f);
+                    Name = "DoorOpeningWest";
+                    Tile->DoorOpeningWest = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                }
                 --DoorCount;
                 ++TileIndex;
                 continue;
             }
-            if(DoorCount > 0 && DoorPosition[1] == Door::East &&
-               RowIndex == MidX && ColumnIndex == SizeY-1)
-            {
-                --DoorCount;
-                ++TileIndex;
-                continue;
-            }
-            if(DoorCount > 0 && DoorPosition[2] == Door::North &&
-               RowIndex == SizeX-1 && ColumnIndex == MidY) 
-            {
-                --DoorCount;
-                ++TileIndex;
-                continue;
-            }
-            if(DoorCount > 0 && DoorPosition[3] == Door::West &&
-               RowIndex == MidX && ColumnIndex == 0)
-            {
-                --DoorCount;
-                ++TileIndex;
-                continue;
-            }
-
+            
             // Add Walls
             // Bottom
             if(RowIndex == 0)

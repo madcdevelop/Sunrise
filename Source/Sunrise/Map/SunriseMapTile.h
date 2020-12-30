@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../Classes/Components/InstancedStaticMeshComponent.h"
+#include "../Classes/Components/BoxComponent.h"
 #include "SunriseMapTile.generated.h"
 
 UCLASS()
@@ -25,6 +26,18 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     class UInstancedStaticMeshComponent* PillarCorner;
 
+    UPROPERTY(EditAnywhere)
+    class UBoxComponent* DoorOpeningSouth;
+
+    UPROPERTY(EditAnywhere)
+    class UBoxComponent* DoorOpeningEast;
+
+    UPROPERTY(EditAnywhere)
+    class UBoxComponent* DoorOpeningNorth;
+
+    UPROPERTY(EditAnywhere)
+    class UBoxComponent* DoorOpeningWest;
+
 private:
     int32 ColumnIndex;
     
@@ -43,6 +56,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
     void GenerateTile(UInstancedStaticMeshComponent* TileMesh, FTransform Transform);
+
+    UBoxComponent* CreateTraceBox(AActor* Parent, FName Name, FRotator Rotation, FVector Location, FVector Extents);
 
 protected:
 	// Called when the game starts or when spawned
