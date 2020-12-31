@@ -31,9 +31,6 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Tile")
-    TSubclassOf<class ASunriseMapTile> Tile;
-
 public:	
 	// Sets default values for this actor's properties
 	ASunriseMap();
@@ -49,6 +46,4 @@ protected:
 
 private:
     void GenerateMap();
-
-    void DeleteMap();
 };
