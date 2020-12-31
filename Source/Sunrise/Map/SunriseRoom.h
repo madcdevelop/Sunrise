@@ -10,14 +10,21 @@
 
 #include "SunriseRoom.generated.h"
 
-USTRUCT()
-struct FTile
+UENUM()
+enum class ETile
 {
-    GENERATED_BODY()
-
-    int32 RowIndex;
-    int32 ColumnIndex;
-    FTile* Parent;
+    None = 0,
+    Floor,
+    FloorHallway,
+    Door,
+    WallSouth,
+    WallEast,
+    WallNorth,
+    WallWest,
+    CornerWallSouthWest,
+    CornerWallSouthEast,
+    CornerWallNorthWest,
+    CornerWallNorthEast
 };
 
 UENUM()
@@ -30,20 +37,51 @@ enum class EDoor
     West
 };
 
+USTRUCT()
+struct FTile
+{
+    GENERATED_BODY()
+
+    FTile()
+        : Type(ETile::None), RowIndex(0), ColumnIndex(0), Location(FVector(0.0f, 0.0f, 0.0f)), Parent(nullptr)
+    {}
+
+    FTile(ETile InType, int32 InRowIndex, int32 InColumnIndex, FVector InLocation, FTile* InParent)
+        : Type(InType), RowIndex(InRowIndex), ColumnIndex(InColumnIndex), Location(InLocation), Parent(InParent)
+    {}
+
+    UPROPERTY(VisibleAnywhere)
+    ETile Type;
+
+    UPROPERTY(VisibleAnywhere)
+    int32 RowIndex;
+
+    UPROPERTY(VisibleAnywhere)
+    int32 ColumnIndex;
+
+    UPROPERTY(VisibleAnywhere)
+    FVector Location;
+
+    FTile* Parent;
+};
+
 UCLASS()
 class SUNRISE_API ASunriseRoom : public AActor
 {
 	GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, Category = "Map")
+    UPROPERTY(EditAnywhere, Category = "Room")
     int32 MinSize;
 
-    UPROPERTY(EditAnywhere, Category = "Map")
+    UPROPERTY(EditAnywhere, Category = "Room")
     int32 MaxSize;
 
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     FVector MeshSize;
+
+    UPROPERTY(EditAnywhere, Category = "Tile")
+    TArray<FTile> Tiles;
 
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     class UInstancedStaticMeshComponent* Floor;
@@ -54,17 +92,19 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     class UInstancedStaticMeshComponent* PillarCorner;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Category = "Room")
     class UBoxComponent* DoorOpeningSouth;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Category = "Room")
     class UBoxComponent* DoorOpeningEast;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Category = "Room")
     class UBoxComponent* DoorOpeningNorth;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Category = "Room")
     class UBoxComponent* DoorOpeningWest;
+
+
 
 private:
     UPROPERTY(EditDefaultsOnly, Category = "Default")

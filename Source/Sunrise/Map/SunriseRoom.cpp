@@ -73,6 +73,8 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
             FTransform FloorTransform(FloorLocation);
             GenerateTile(Floor, FloorTransform);
 
+            Tiles.Add(FTile(ETile::Floor, RowIndex, ColumnIndex, FloorLocation, nullptr));
+
             // Add Doors
             FName Name;
             FVector DoorOpeningLocation;
@@ -82,6 +84,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 DoorOpeningLocation = FVector(LocationX - (MeshSize.X * 0.5f), LocationY, 0.0f);
                 Name = "DoorOpeningSouth";
                 DoorOpeningSouth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
                 ++TileIndex;
                 continue;
@@ -91,6 +94,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 DoorOpeningLocation = FVector(LocationX, LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 Name = "DoorOpeningEast";
                 DoorOpeningEast = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
                 ++TileIndex;
                 continue;
@@ -100,6 +104,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 DoorOpeningLocation = FVector(LocationX + (MeshSize.X * 0.5f), LocationY, 0.0f);
                 Name = "DoorOpeningNorth";
                 DoorOpeningNorth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
                 ++TileIndex;
                 continue;
@@ -109,6 +114,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 DoorOpeningLocation = FVector(LocationX, LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 Name = "DoorOpeningWest";
                 DoorOpeningWest = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
                 ++TileIndex;
                 continue;
@@ -121,6 +127,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector WallLocation(LocationX - (MeshSize.X * 0.6f), LocationY, 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
                 GenerateTile(Wall, WallTransform);
+                Tiles[TileIndex].Type = ETile::WallSouth;
             }
             if(RowIndex == SizeX-1)
             {
@@ -128,6 +135,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector WallLocation(LocationX + (MeshSize.X * 0.6f), LocationY, 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
                 GenerateTile(Wall, WallTransform);
+                Tiles[TileIndex].Type = ETile::WallNorth;
             }
             if(ColumnIndex == 0)
             {
@@ -135,6 +143,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector WallLocation(LocationX, LocationY - (MeshSize.Y * 0.6f), 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
                 GenerateTile(Wall, WallTransform);
+                Tiles[TileIndex].Type = ETile::WallWest;
             }
             if(ColumnIndex == SizeY-1)
             {
@@ -142,6 +151,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector WallLocation(LocationX, LocationY + (MeshSize.Y * 0.6f), 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
                 GenerateTile(Wall, WallTransform);
+                Tiles[TileIndex].Type = ETile::WallEast;
             }
 
             // Add Corner pillars
@@ -151,6 +161,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector PillarCornerLocation(LocationX - (MeshSize.X * 0.5f), LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
                 GenerateTile(PillarCorner, PillarCornerTransform);
+                Tiles[TileIndex].Type = ETile::CornerWallSouthWest;
             }
             else if(RowIndex == 0 && ColumnIndex == SizeY-1)
             {
@@ -158,6 +169,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector PillarCornerLocation(LocationX - (MeshSize.X * 0.5f), LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
                 GenerateTile(PillarCorner, PillarCornerTransform);
+                Tiles[TileIndex].Type = ETile::CornerWallSouthEast;
             }
             else if(RowIndex == SizeX-1 && ColumnIndex == SizeY-1)
             {
@@ -165,6 +177,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector PillarCornerLocation(LocationX + (MeshSize.X * 0.5f), LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
                 GenerateTile(PillarCorner, PillarCornerTransform);
+                Tiles[TileIndex].Type = ETile::CornerWallNorthEast;
             }
             else if(RowIndex == SizeX-1 && ColumnIndex == 0)
             {
@@ -172,6 +185,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
                 FVector PillarCornerLocation(LocationX + (MeshSize.X * 0.5f), LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
                 GenerateTile(PillarCorner, PillarCornerTransform);
+                Tiles[TileIndex].Type = ETile::CornerWallNorthWest;
             }
             ++TileIndex;
         }
@@ -196,6 +210,8 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
             FTransform FloorTransform(FloorLocation);
             GenerateTile(Floor, FloorTransform);
 
+            Tiles.Add(FTile(ETile::FloorHallway, RowIndex, ColumnIndex, FloorLocation, nullptr));
+
             // Add Walls
             FRotator WallRotation(0.0f, 0.0f, 0.0f);
             FVector WallLocation(LocationX - (MeshSize.X * 0.6f), LocationY, 0.0f);
@@ -214,6 +230,7 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
                 FVector DoorOpeningLocation(LocationX, LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
                 DoorOpeningWest = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
             }
             if(ColumnIndex == SizeY-1)
             {
@@ -221,6 +238,7 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
                 FVector DoorOpeningLocation(LocationX, LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
                 DoorOpeningEast = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
             }
             ++TileIndex;
         }
@@ -245,6 +263,8 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
             FTransform FloorTransform(FloorLocation);
             GenerateTile(Floor, FloorTransform);
 
+            Tiles.Add(FTile(ETile::FloorHallway, RowIndex, ColumnIndex, FloorLocation, nullptr));
+
             // Add Walls
             FRotator WallRotation(0.0f, -90.0f, 0.0f);
             FVector WallLocation(LocationX, LocationY + (MeshSize.Y * 0.6f), 0.0f);
@@ -263,6 +283,7 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
                 FVector DoorOpeningLocation(LocationX - (MeshSize.X * 0.5f), LocationY, 0.0f);
                 FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
                 DoorOpeningSouth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
             }
             if(RowIndex == SizeX-1)
             {
@@ -270,6 +291,7 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
                 FVector DoorOpeningLocation(LocationX + (MeshSize.X * 0.5f), LocationY, 0.0f);
                 FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
                 DoorOpeningNorth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                Tiles[TileIndex].Type = ETile::Door;
             }
             ++TileIndex;
         }
