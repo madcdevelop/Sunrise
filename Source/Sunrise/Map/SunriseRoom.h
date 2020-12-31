@@ -78,11 +78,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-    void GenerateRoom(ASunriseRoom* Room, FRandomStream Stream, FVector Offset);
+    void GenerateRoom(FRandomStream Stream, FVector Offset);
 
-    void GenerateHallwayHorizontal(ASunriseRoom* Room, FRandomStream Stream, FVector Offset);
+    void GenerateHallwayHorizontal(FRandomStream Stream, FVector Offset);
 
-    void GenerateHallwayVertical(ASunriseRoom* Room, FRandomStream Stream, FVector Offset);
+    void GenerateHallwayVertical(FRandomStream Stream, FVector Offset);
 
 protected:
 	// Called when the game starts or when spawned
