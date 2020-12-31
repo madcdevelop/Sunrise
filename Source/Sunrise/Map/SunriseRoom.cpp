@@ -2,7 +2,6 @@
 
 
 #include "SunriseRoom.h"
-#include "SunriseMapTile.h"
 
 // Sets default values
 ASunriseRoom::ASunriseRoom()
@@ -13,6 +12,13 @@ ASunriseRoom::ASunriseRoom()
     // Defaults
     MinSize = 3;
     MaxSize = 8;
+
+    // Components
+    Root = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
+    if (Root) RootComponent = Root;
+    Floor = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Floor"));
+    Wall = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall"));
+    PillarCorner = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("PillarCorner"));
 }
 
 // Called when the game starts or when spawned
@@ -27,7 +33,7 @@ void ASunriseRoom::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream, FVector Offset)
+void ASunriseRoom::GenerateRoom(ASunriseRoom* Room, FRandomStream Stream, FVector Offset)
 {
     int32 SizeX = Stream.RandRange(MinSize, MaxSize);
     int32 SizeY = Stream.RandRange(MinSize, MaxSize);
@@ -38,18 +44,18 @@ void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream, FVe
     int32 DoorCount = Stream.RandRange(1, 4);
     int32 DoorRemovalCount = 4 - DoorCount;
 
-    TArray<Door> DoorPosition;
-    DoorPosition.Add(Door::South);
-    DoorPosition.Add(Door::East);
-    DoorPosition.Add(Door::North);
-    DoorPosition.Add(Door::West);
+    TArray<EDoor> DoorPosition;
+    DoorPosition.Add(EDoor::South);
+    DoorPosition.Add(EDoor::East);
+    DoorPosition.Add(EDoor::North);
+    DoorPosition.Add(EDoor::West);
 
     for(size_t i = 0; i < DoorRemovalCount; ++i)
     {
         int32 RemoveDoor = Stream.RandRange(0, 1);
         if(RemoveDoor == 1)
         {
-            DoorPosition[i] = Door::None;
+            DoorPosition[i] = EDoor::None;
         }
     }
 
@@ -59,50 +65,50 @@ void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream, FVe
     {
         for(size_t ColumnIndex = 0; ColumnIndex < SizeY; ++ColumnIndex)
         {
-            int LocationX = (TileIndex / SizeY) * Tile->MeshSize.X + Offset.X;
-            int LocationY = (TileIndex % SizeY) * Tile->MeshSize.Y + Offset.Y;
+            int LocationX = (TileIndex / SizeY) * MeshSize.X + Offset.X;
+            int LocationY = (TileIndex % SizeY) * MeshSize.Y + Offset.Y;
 
             // Add Floors
             FVector FloorLocation(LocationX, LocationY, 0.0f);
             FTransform FloorTransform(FloorLocation);
-            Tile->GenerateTile(Tile->Floor, FloorTransform);
+            Room->GenerateTile(Floor, FloorTransform);
 
             // Add Doors
             FName Name;
             FVector DoorOpeningLocation;
-            FVector Extents(Tile->MeshSize.X / 2.0f, Tile->MeshSize.Y / 2.0f, 500.0f);
-            if(DoorCount > 0 && DoorPosition[0] == Door::South && RowIndex == 0 && ColumnIndex == MidY)
+            FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
+            if(DoorCount > 0 && DoorPosition[0] == EDoor::South && RowIndex == 0 && ColumnIndex == MidY)
             {
-                DoorOpeningLocation = FVector(LocationX - (Tile->MeshSize.X * 0.5f), LocationY, 0.0f);
+                DoorOpeningLocation = FVector(LocationX - (MeshSize.X * 0.5f), LocationY, 0.0f);
                 Name = "DoorOpeningSouth";
-                Tile->DoorOpeningSouth = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                DoorOpeningSouth = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 --DoorCount;
                 ++TileIndex;
                 continue;
             }
-            else if(DoorCount > 0 && DoorPosition[1] == Door::East && RowIndex == MidX && ColumnIndex == SizeY-1)
+            else if(DoorCount > 0 && DoorPosition[1] == EDoor::East && RowIndex == MidX && ColumnIndex == SizeY-1)
             {
-                DoorOpeningLocation = FVector(LocationX, LocationY + (Tile->MeshSize.Y * 0.5f), 0.0f);
+                DoorOpeningLocation = FVector(LocationX, LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 Name = "DoorOpeningEast";
-                Tile->DoorOpeningEast = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                DoorOpeningEast = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 --DoorCount;
                 ++TileIndex;
                 continue;
             }
-            else if(DoorCount > 0 && DoorPosition[2] == Door::North && RowIndex == SizeX-1 && ColumnIndex == MidY) 
+            else if(DoorCount > 0 && DoorPosition[2] == EDoor::North && RowIndex == SizeX-1 && ColumnIndex == MidY) 
             {
-                DoorOpeningLocation = FVector(LocationX + (Tile->MeshSize.X * 0.5f), LocationY, 0.0f);
+                DoorOpeningLocation = FVector(LocationX + (MeshSize.X * 0.5f), LocationY, 0.0f);
                 Name = "DoorOpeningNorth";
-                Tile->DoorOpeningNorth = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                DoorOpeningNorth = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 --DoorCount;
                 ++TileIndex;
                 continue;
             }
-            else if(DoorCount > 0 && DoorPosition[3] == Door::West && RowIndex == MidX && ColumnIndex == 0)
+            else if(DoorCount > 0 && DoorPosition[3] == EDoor::West && RowIndex == MidX && ColumnIndex == 0)
             {
-                DoorOpeningLocation = FVector(LocationX, LocationY - (Tile->MeshSize.Y * 0.5f), 0.0f);
+                DoorOpeningLocation = FVector(LocationX, LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 Name = "DoorOpeningWest";
-                Tile->DoorOpeningWest = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                DoorOpeningWest = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 --DoorCount;
                 ++TileIndex;
                 continue;
@@ -112,67 +118,67 @@ void ASunriseRoom::GenerateRoom(ASunriseMapTile* Tile, FRandomStream Stream, FVe
             if(RowIndex == 0)
             {
                 FRotator WallRotation(0.0f, 0.0f, 0.0f);
-                FVector WallLocation(LocationX - (Tile->MeshSize.X * 0.6f), LocationY, 0.0f);
+                FVector WallLocation(LocationX - (MeshSize.X * 0.6f), LocationY, 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
-                Tile->GenerateTile(Tile->Wall, WallTransform);
+                Room->GenerateTile(Wall, WallTransform);
             }
             if(RowIndex == SizeX-1)
             {
                 FRotator WallRotation(0.0f, 180.0f, 0.0f);
-                FVector WallLocation(LocationX + (Tile->MeshSize.X * 0.6f), LocationY, 0.0f);
+                FVector WallLocation(LocationX + (MeshSize.X * 0.6f), LocationY, 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
-                Tile->GenerateTile(Tile->Wall, WallTransform);
+                Room->GenerateTile(Wall, WallTransform);
             }
             if(ColumnIndex == 0)
             {
                 FRotator WallRotation(0.0f, 90.0f, 0.0f);
-                FVector WallLocation(LocationX, LocationY - (Tile->MeshSize.Y * 0.6f), 0.0f);
+                FVector WallLocation(LocationX, LocationY - (MeshSize.Y * 0.6f), 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
-                Tile->GenerateTile(Tile->Wall, WallTransform);
+                Room->GenerateTile(Wall, WallTransform);
             }
             if(ColumnIndex == SizeY-1)
             {
                 FRotator WallRotation(0.0f, -90.0f, 0.0f);
-                FVector WallLocation(LocationX, LocationY + (Tile->MeshSize.Y * 0.6f), 0.0f);
+                FVector WallLocation(LocationX, LocationY + (MeshSize.Y * 0.6f), 0.0f);
                 FTransform WallTransform(WallRotation, WallLocation);
-                Tile->GenerateTile(Tile->Wall, WallTransform);
+                Room->GenerateTile(Wall, WallTransform);
             }
 
             // Add Corner pillars
             if(RowIndex == 0 && ColumnIndex == 0)
             {
                 FRotator PillarCornerRotation(0.0f, 0.0f, 0.0f);
-                FVector PillarCornerLocation(LocationX - (Tile->MeshSize.X * 0.5f), LocationY - (Tile->MeshSize.Y * 0.5f), 0.0f);
+                FVector PillarCornerLocation(LocationX - (MeshSize.X * 0.5f), LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
-                Tile->GenerateTile(Tile->PillarCorner, PillarCornerTransform);
+                Room->GenerateTile(PillarCorner, PillarCornerTransform);
             }
             else if(RowIndex == 0 && ColumnIndex == SizeY-1)
             {
                 FRotator PillarCornerRotation(0.0f, -90.0f, 0.0f);
-                FVector PillarCornerLocation(LocationX - (Tile->MeshSize.X * 0.5f), LocationY + (Tile->MeshSize.Y * 0.5f), 0.0f);
+                FVector PillarCornerLocation(LocationX - (MeshSize.X * 0.5f), LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
-                Tile->GenerateTile(Tile->PillarCorner, PillarCornerTransform);
+                Room->GenerateTile(PillarCorner, PillarCornerTransform);
             }
             else if(RowIndex == SizeX-1 && ColumnIndex == SizeY-1)
             {
                 FRotator PillarCornerRotation(0.0f, 180.0f, 0.0f);
-                FVector PillarCornerLocation(LocationX + (Tile->MeshSize.X * 0.5f), LocationY + (Tile->MeshSize.Y * 0.5f), 0.0f);
+                FVector PillarCornerLocation(LocationX + (MeshSize.X * 0.5f), LocationY + (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
-                Tile->GenerateTile(Tile->PillarCorner, PillarCornerTransform);
+                Room->GenerateTile(PillarCorner, PillarCornerTransform);
             }
             else if(RowIndex == SizeX-1 && ColumnIndex == 0)
             {
                 FRotator PillarCornerRotation(0.0f, 90.0f, 0.0f);
-                FVector PillarCornerLocation(LocationX + (Tile->MeshSize.X * 0.5f), LocationY - (Tile->MeshSize.Y * 0.5f), 0.0f);
+                FVector PillarCornerLocation(LocationX + (MeshSize.X * 0.5f), LocationY - (MeshSize.Y * 0.5f), 0.0f);
                 FTransform PillarCornerTransform(PillarCornerRotation, PillarCornerLocation);
-                Tile->GenerateTile(Tile->PillarCorner, PillarCornerTransform);
+                Room->GenerateTile(PillarCorner, PillarCornerTransform);
             }
             ++TileIndex;
         }
     }
 }
 
-void ASunriseRoom::GenerateHallwayHorizontal(ASunriseMapTile* Tile, FRandomStream Stream, FVector Offset)
+void ASunriseRoom::GenerateHallwayHorizontal(ASunriseRoom* Room, FRandomStream Stream, FVector Offset)
 {
     int32 SizeX = 1;
     int32 SizeY = Stream.RandRange(1, MaxSize);
@@ -182,46 +188,46 @@ void ASunriseRoom::GenerateHallwayHorizontal(ASunriseMapTile* Tile, FRandomStrea
     {
         for(size_t ColumnIndex = 0; ColumnIndex < SizeY; ++ColumnIndex)
         {
-            int LocationX = (TileIndex / SizeY) * Tile->MeshSize.X + Offset.X;
-            int LocationY = (TileIndex % SizeY) * Tile->MeshSize.Y + Offset.Y;
+            int LocationX = (TileIndex / SizeY) * MeshSize.X + Offset.X;
+            int LocationY = (TileIndex % SizeY) * MeshSize.Y + Offset.Y;
 
             // Add Floors
             FVector FloorLocation(LocationX, LocationY, 0.0f);
             FTransform FloorTransform(FloorLocation);
-            Tile->GenerateTile(Tile->Floor, FloorTransform);
+            Room->GenerateTile(Floor, FloorTransform);
 
             // Add Walls
             FRotator WallRotation(0.0f, 0.0f, 0.0f);
-            FVector WallLocation(LocationX - (Tile->MeshSize.X * 0.6f), LocationY, 0.0f);
+            FVector WallLocation(LocationX - (MeshSize.X * 0.6f), LocationY, 0.0f);
             FTransform WallTransform(WallRotation, WallLocation);
-            Tile->GenerateTile(Tile->Wall, WallTransform);
+            Room->GenerateTile(Wall, WallTransform);
 
             WallRotation = FRotator(0.0f, 180.0f, 0.0f);
-            WallLocation = FVector(LocationX + (Tile->MeshSize.X * 0.6f), LocationY , 0.0f);
+            WallLocation = FVector(LocationX + (MeshSize.X * 0.6f), LocationY , 0.0f);
             WallTransform = FTransform(WallRotation, WallLocation);
-            Tile->GenerateTile(Tile->Wall, WallTransform);
+            Room->GenerateTile(Wall, WallTransform);
 
             // Add Doors
             if(ColumnIndex == 0)
             {
                 FName Name = "DoorOpeningWest";
-                FVector DoorOpeningLocation(LocationX, LocationY - (Tile->MeshSize.Y * 0.5f), 0.0f);
-                FVector Extents(Tile->MeshSize.X / 2.0f, Tile->MeshSize.Y / 2.0f, 500.0f);
-                Tile->DoorOpeningWest = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                FVector DoorOpeningLocation(LocationX, LocationY - (MeshSize.Y * 0.5f), 0.0f);
+                FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
+                DoorOpeningWest = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
             }
             if(ColumnIndex == SizeY-1)
             {
                 FName Name = "DoorOpeningEast";
-                FVector DoorOpeningLocation(LocationX, LocationY + (Tile->MeshSize.Y * 0.5f), 0.0f);
-                FVector Extents(Tile->MeshSize.X / 2.0f, Tile->MeshSize.Y / 2.0f, 500.0f);
-                Tile->DoorOpeningEast = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                FVector DoorOpeningLocation(LocationX, LocationY + (MeshSize.Y * 0.5f), 0.0f);
+                FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
+                DoorOpeningEast = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
             }
             ++TileIndex;
         }
     }
 }
 
-void ASunriseRoom::GenerateHallwayVertical(ASunriseMapTile* Tile, FRandomStream Stream, FVector Offset)
+void ASunriseRoom::GenerateHallwayVertical(ASunriseRoom* Room, FRandomStream Stream, FVector Offset)
 {
     int32 SizeX = Stream.RandRange(1, MaxSize);
     int32 SizeY = 1;
@@ -231,41 +237,76 @@ void ASunriseRoom::GenerateHallwayVertical(ASunriseMapTile* Tile, FRandomStream 
     {
         for(size_t ColumnIndex = 0; ColumnIndex < SizeY; ++ColumnIndex)
         {
-            int LocationX = (TileIndex / SizeY) * Tile->MeshSize.X + Offset.X;
-            int LocationY = (TileIndex % SizeY) * Tile->MeshSize.Y + Offset.Y;
+            int LocationX = (TileIndex / SizeY) * MeshSize.X + Offset.X;
+            int LocationY = (TileIndex % SizeY) * MeshSize.Y + Offset.Y;
 
             // Add Floors
             FVector FloorLocation(LocationX, LocationY, 0.0f);
             FTransform FloorTransform(FloorLocation);
-            Tile->GenerateTile(Tile->Floor, FloorTransform);
+            Room->GenerateTile(Floor, FloorTransform);
 
             // Add Walls
             FRotator WallRotation(0.0f, -90.0f, 0.0f);
-            FVector WallLocation(LocationX, LocationY + (Tile->MeshSize.Y * 0.6f), 0.0f);
+            FVector WallLocation(LocationX, LocationY + (MeshSize.Y * 0.6f), 0.0f);
             FTransform WallTransform(WallRotation, WallLocation);
-            Tile->GenerateTile(Tile->Wall, WallTransform);
+            Room->GenerateTile(Wall, WallTransform);
 
             WallRotation = FRotator(0.0f, 90.0f, 0.0f);
-            WallLocation = FVector(LocationX, LocationY - (Tile->MeshSize.Y * 0.6f), 0.0f);
+            WallLocation = FVector(LocationX, LocationY - (MeshSize.Y * 0.6f), 0.0f);
             WallTransform = FTransform(WallRotation, WallLocation);
-            Tile->GenerateTile(Tile->Wall, WallTransform);
+            Room->GenerateTile(Wall, WallTransform);
 
             // Add Doors
             if(RowIndex == 0)
             {
                 FName Name = "DoorOpeningSouth";
-                FVector DoorOpeningLocation(LocationX - (Tile->MeshSize.X * 0.5f), LocationY, 0.0f);
-                FVector Extents(Tile->MeshSize.X / 2.0f, Tile->MeshSize.Y / 2.0f, 500.0f);
-                Tile->DoorOpeningSouth = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                FVector DoorOpeningLocation(LocationX - (MeshSize.X * 0.5f), LocationY, 0.0f);
+                FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
+                DoorOpeningSouth = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
             }
             if(RowIndex == SizeX-1)
             {
                 FName Name = "DoorOpeningNorth";
-                FVector DoorOpeningLocation(LocationX + (Tile->MeshSize.X * 0.5f), LocationY, 0.0f);
-                FVector Extents(Tile->MeshSize.X / 2.0f, Tile->MeshSize.Y / 2.0f, 500.0f);
-                Tile->DoorOpeningNorth = Tile->CreateTraceBox(Tile, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
+                FVector DoorOpeningLocation(LocationX + (MeshSize.X * 0.5f), LocationY, 0.0f);
+                FVector Extents(MeshSize.X / 2.0f, MeshSize.Y / 2.0f, 500.0f);
+                DoorOpeningNorth = Room->CreateTraceBox(Room, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
             }
             ++TileIndex;
         }
+    }
+}
+
+void ASunriseRoom::GenerateTile(UInstancedStaticMeshComponent* TileMesh, FTransform Transform)
+{
+    if(TileMesh) 
+    {
+        TileMesh->AddInstance(Transform);
+    }
+}
+
+UBoxComponent* ASunriseRoom::CreateTraceBox(AActor* Parent, FName Name, FRotator Rotation, FVector Location, FVector Extents)
+{
+    if(!Parent) return nullptr;
+
+    FTransform Transform = FTransform(Rotation, Location, FVector(1.0f, 1.0f, 1.0f));
+
+    UBoxComponent* BoxComponent = NewObject<UBoxComponent>(Parent, Name);
+
+    if(BoxComponent)
+    {
+        BoxComponent->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+        BoxComponent->RegisterComponent();
+        BoxComponent->bSelectable = true;
+        BoxComponent->bEditableWhenInherited = true;
+
+        BoxComponent->SetBoxExtent(Extents);
+        BoxComponent->SetWorldTransform(Transform);
+        BoxComponent->SetVisibility(true);
+        BoxComponent->SetHiddenInGame(true);
+        return BoxComponent;
+    }
+    else
+    {
+        return nullptr;
     }
 }
