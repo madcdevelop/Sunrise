@@ -255,9 +255,9 @@ void ASunriseMap::BinaryTreeMaze()
     *       - For each cell in the grid, toss a coin to decide whether to carve a passage south or west
     */
     int32 TileIndex = 0;
-    for(size_t RowIndex = 1; RowIndex < MapSizeX; RowIndex+=2)
+    for(size_t RowIndex = 1; RowIndex < MapSizeX; RowIndex+=3)
     {
-        for(size_t ColumnIndex = 1; ColumnIndex < MapSizeY; ColumnIndex+=2)
+        for(size_t ColumnIndex = 1; ColumnIndex < MapSizeY; ColumnIndex+=3)
         {   
             TileIndex = RowIndex * MapSizeY + ColumnIndex;
             // start tile
@@ -271,6 +271,7 @@ void ASunriseMap::BinaryTreeMaze()
             {
                 MapTiles[TileIndex].Type = ETile::Floor;
                 MapTiles[TileIndex-1].Type = ETile::Floor;
+                MapTiles[TileIndex-1-1].Type = ETile::Floor;
                 continue;
             }
             // Go Vertical (South)
@@ -278,6 +279,7 @@ void ASunriseMap::BinaryTreeMaze()
             {
                 MapTiles[TileIndex].Type = ETile::Floor;
                 MapTiles[TileIndex-MapSizeY].Type = ETile::Floor;
+                MapTiles[TileIndex-MapSizeY-MapSizeY].Type = ETile::Floor;
                 continue;
             }
 
@@ -288,12 +290,14 @@ void ASunriseMap::BinaryTreeMaze()
                 // Go Horizontal (West)
                 MapTiles[TileIndex].Type = ETile::Floor;
                 MapTiles[TileIndex-1].Type = ETile::Floor;
+                MapTiles[TileIndex-1-1].Type = ETile::Floor;
             }
             else
             {
                 // Go Vertical (South)
                 MapTiles[TileIndex].Type = ETile::Floor;
                 MapTiles[TileIndex-MapSizeY].Type = ETile::Floor;
+                MapTiles[TileIndex-MapSizeY-MapSizeY].Type = ETile::Floor;
             }
         }
     }
