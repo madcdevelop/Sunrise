@@ -49,6 +49,7 @@ void ASunriseMap::GenerateMap()
         // Look for all actors and objects that exist for map generation and delete
         DeleteActors(Room);
         DeleteActors(PlayerStart);
+        DeleteActors(MeleeAICharacter);
         MapTiles.Empty();
 
         // Initialize empty map
@@ -237,9 +238,9 @@ void ASunriseMap::GenerateMap()
             }
         }
 
-        // Spawn Player Start
+        // Spawn
         SpawnPlayerStart();
-
+        SpawnAICharacters(MeleeAICharacter);
     }
 }
 
@@ -309,6 +310,21 @@ void ASunriseMap::SpawnPlayerStart()
 
     FActorSpawnParameters SpawnParams;
     GetWorld()->SpawnActor<APlayerStart>(PlayerStart, FTransform(MapTiles[PlayerStartIndex].Location + FVector(0.0f, 0.0f, 110.f)));
+}
+
+void ASunriseMap::SpawnAICharacters(TSubclassOf<ACharacter> AICharacter)
+{
+    int32 Count = 0;
+    while(Count < AISpawnCount)
+    {
+        int32 AICharacterStartIndex = Stream.RandRange((MapSizeY * 2) + 1, MapSizeX * MapSizeY);
+        if(MapTiles[AICharacterStartIndex].Type == ETile::Floor)
+        {
+            GetWorld()->SpawnActor<ASunriseAICharacter>(AICharacter, FTransform(MapTiles[AICharacterStartIndex].Location + FVector(0.0f, 0.0f, 250.f)));
+            ++Count;
+        }
+
+    }
 }
 
 void ASunriseMap::DeleteActors(TSubclassOf<AActor> ActorToDelete)

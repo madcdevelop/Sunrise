@@ -7,6 +7,7 @@
 #include "../Classes/GameFramework/PlayerStart.h"
 
 #include "SunriseRoom.h"
+#include "../Character/SunriseAICharacter.h"
 
 #include "SunriseMap.generated.h"
 
@@ -37,8 +38,14 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
 
-    UPROPERTY(EditAnywhere, Category = "Character")
+    UPROPERTY(EditAnywhere, Category = "Player Character")
     TSubclassOf<class APlayerStart> PlayerStart;
+
+    UPROPERTY(EditAnywhere, Category = "AI Character")
+    int32 AISpawnCount;
+
+    UPROPERTY(EditAnywhere, Category = "AI Character")
+    TSubclassOf<class ASunriseAICharacter> MeleeAICharacter;
 
     TArray<FTile> MapTiles;
 
@@ -59,5 +66,6 @@ private:
     void GenerateMap();
     void BinaryTreeMaze();
     void SpawnPlayerStart();
+    void SpawnAICharacters(TSubclassOf<ACharacter> AICharacter);
     void DeleteActors(TSubclassOf<AActor> ActorToDelete);
 };
