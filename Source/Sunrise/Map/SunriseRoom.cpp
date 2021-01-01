@@ -37,6 +37,10 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
 {
     int32 SizeX = Stream.RandRange(MinSize, MaxSize);
     int32 SizeY = Stream.RandRange(MinSize, MaxSize);
+
+    RoomSizeX = SizeX;
+    RoomSizeY = SizeY;
+
     int32 MidX = SizeX / 2;
     int32 MidY = SizeY / 2;
 
@@ -73,7 +77,7 @@ void ASunriseRoom::GenerateRoom(FRandomStream Stream, FVector Offset)
             FTransform FloorTransform(FloorLocation);
             GenerateTile(Floor, FloorTransform);
 
-            Tiles.Add(FTile(ETile::Floor, RowIndex, ColumnIndex, FloorLocation, nullptr));
+            Tiles.Add(FTile(ETile::Floor, 0, 0, RowIndex, ColumnIndex, FloorLocation, nullptr));
 
             // Add Doors
             FName Name;
@@ -197,6 +201,9 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
     int32 SizeX = 1;
     int32 SizeY = Stream.RandRange(1, MaxSize);
 
+    RoomSizeX = SizeX;
+    RoomSizeY = SizeY;
+
     int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)
     {
@@ -210,7 +217,7 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
             FTransform FloorTransform(FloorLocation);
             GenerateTile(Floor, FloorTransform);
 
-            Tiles.Add(FTile(ETile::FloorHallway, RowIndex, ColumnIndex, FloorLocation, nullptr));
+            Tiles.Add(FTile(ETile::FloorHallway, 0, 0, RowIndex, ColumnIndex, FloorLocation, nullptr));
 
             // Add Walls
             FRotator WallRotation(0.0f, 0.0f, 0.0f);
@@ -250,6 +257,9 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
     int32 SizeX = Stream.RandRange(1, MaxSize);
     int32 SizeY = 1;
 
+    RoomSizeX = SizeX;
+    RoomSizeY = SizeY;
+
     int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)
     {
@@ -263,7 +273,7 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
             FTransform FloorTransform(FloorLocation);
             GenerateTile(Floor, FloorTransform);
 
-            Tiles.Add(FTile(ETile::FloorHallway, RowIndex, ColumnIndex, FloorLocation, nullptr));
+            Tiles.Add(FTile(ETile::FloorHallway, 0, 0, RowIndex, ColumnIndex, FloorLocation, nullptr));
 
             // Add Walls
             FRotator WallRotation(0.0f, -90.0f, 0.0f);

@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "SunriseRoom.h"
+
 #include "SunriseMap.generated.h"
 
 
@@ -30,6 +33,8 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
+
+    TArray<FTile> MapTiles;
 
 public:	
 	// Sets default values for this actor's properties

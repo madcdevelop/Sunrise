@@ -46,12 +46,28 @@ void ASunriseMap::GenerateMap()
     ASunriseRoom* DefaultRoom = Cast<ASunriseRoom>(Room->GetDefaultObject());
     if(DefaultRoom)
     {
-        // Look for all actors of type ASunriseMapTile and destroy
+        // Look for all actors and objects that exist for map generation and delete
         TArray<AActor*> OutActors;
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), Room, OutActors);
         for(auto Actor: OutActors)
         {
             Actor->Destroy();
+        }
+        MapTiles.Empty();
+
+
+        // Initialize map
+        int TileIndex = 0;
+        for(size_t RowIndex = 0; RowIndex < MapSizeX; ++RowIndex)
+        {
+            for(size_t ColumnIndex = 0; ColumnIndex < MapSizeY; ++ColumnIndex)
+            {
+                int LocationX = (TileIndex / MapSizeY) * DefaultRoom->MeshSize.X;
+                int LocationY = (TileIndex % MapSizeY) * DefaultRoom->MeshSize.Y;
+
+                MapTiles.Add(FTile(ETile::None, RowIndex, ColumnIndex, -1, -1, FVector(LocationX, LocationY, 0.0f), nullptr));
+                ++TileIndex;
+            }
         }
 
         // Spawn Tile to create next room
