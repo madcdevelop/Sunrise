@@ -55,5 +55,4 @@ protected:
 private:
     void GenerateMap();
     void BinaryTreeMaze();
-    void AddRooms(int32 RoomCount);
 };

@@ -17,6 +17,7 @@ ASunriseRoom::ASunriseRoom()
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultSceneRoot"));
     if (Root) RootComponent = Root;
     Floor = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Floor"));
+    Ceiling = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Ceiling"));
     Wall = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall"));
     PillarCorner = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("PillarCorner"));
 }
@@ -37,9 +38,6 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
 {
     int32 SizeX = Stream.RandRange(MinSize, MaxSize);
     int32 SizeY = Stream.RandRange(MinSize, MaxSize);
-
-    RoomSizeX = SizeX;
-    RoomSizeY = SizeY;
 
     int32 MidX = SizeX / 2;
     int32 MidY = SizeY / 2;
@@ -63,14 +61,12 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
         }
     }
 
-    int32 MapTileIndex = StartMapTileIndex;
-
     // Populate room with meshes
-    int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)
     {
         for(size_t ColumnIndex = 0; ColumnIndex < SizeY; ++ColumnIndex)
         {
+            int32 TileIndex = RowIndex * SizeY + ColumnIndex;
             int LocationX = (TileIndex / SizeY) * MeshSize.X + Offset.X;
             int LocationY = (TileIndex % SizeY) * MeshSize.Y + Offset.Y;
 
@@ -81,11 +77,6 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
 
             Tiles.Add(FTile(ETile::Floor, 0, 0, RowIndex, ColumnIndex, FloorLocation, nullptr));
             
-            MapTiles[MapTileIndex].Type = ETile::Floor;
-            MapTiles[MapTileIndex].RowIndexRoom = RowIndex;
-            MapTiles[MapTileIndex].ColumnIndexRoom = ColumnIndex;
-
-
             // Add Doors
             FName Name;
             FVector DoorOpeningLocation;
@@ -97,8 +88,6 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
                 DoorOpeningSouth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
-                ++TileIndex;
-                ++MapTileIndex;
                 continue;
             }
             else if(DoorCount > 0 && DoorPosition[1] == EDoor::East && RowIndex == MidX && ColumnIndex == SizeY-1)
@@ -108,8 +97,6 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
                 DoorOpeningEast = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
-                ++TileIndex;
-                ++MapTileIndex;
                 continue;
             }
             else if(DoorCount > 0 && DoorPosition[2] == EDoor::North && RowIndex == SizeX-1 && ColumnIndex == MidY) 
@@ -119,8 +106,6 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
                 DoorOpeningNorth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
-                ++TileIndex;
-                ++MapTileIndex;
                 continue;
             }
             else if(DoorCount > 0 && DoorPosition[3] == EDoor::West && RowIndex == MidX && ColumnIndex == 0)
@@ -130,8 +115,6 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
                 DoorOpeningWest = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 Tiles[TileIndex].Type = ETile::Door;
                 --DoorCount;
-                ++TileIndex;
-                ++MapTileIndex;
                 continue;
             }
             
@@ -202,11 +185,7 @@ void ASunriseRoom::GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex
                 GenerateTile(PillarCorner, PillarCornerTransform);
                 Tiles[TileIndex].Type = ETile::CornerWallNorthWest;
             }
-            ++TileIndex;
-            ++MapTileIndex;
         }
-        MapTileIndex -= RoomSizeY-1; // backtrack room size
-        MapTileIndex += MapSizeY-1;  // jump up one row
     }
 }
 
@@ -215,14 +194,11 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
     int32 SizeX = 1;
     int32 SizeY = Stream.RandRange(1, MaxSize);
 
-    RoomSizeX = SizeX;
-    RoomSizeY = SizeY;
-
-    int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)
     {
         for(size_t ColumnIndex = 0; ColumnIndex < SizeY; ++ColumnIndex)
         {
+            int32 TileIndex = RowIndex * SizeY + ColumnIndex;
             int LocationX = (TileIndex / SizeY) * MeshSize.X + Offset.X;
             int LocationY = (TileIndex % SizeY) * MeshSize.Y + Offset.Y;
 
@@ -261,7 +237,6 @@ void ASunriseRoom::GenerateHallwayHorizontal(FRandomStream Stream, FVector Offse
                 DoorOpeningEast = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 Tiles[TileIndex].Type = ETile::Door;
             }
-            ++TileIndex;
         }
     }
 }
@@ -271,14 +246,11 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
     int32 SizeX = Stream.RandRange(1, MaxSize);
     int32 SizeY = 1;
 
-    RoomSizeX = SizeX;
-    RoomSizeY = SizeY;
-
-    int32 TileIndex = 0;
     for(size_t RowIndex = 0; RowIndex < SizeX; ++RowIndex)
     {
         for(size_t ColumnIndex = 0; ColumnIndex < SizeY; ++ColumnIndex)
         {
+            int32 TileIndex = RowIndex * SizeY + ColumnIndex;
             int LocationX = (TileIndex / SizeY) * MeshSize.X + Offset.X;
             int LocationY = (TileIndex % SizeY) * MeshSize.Y + Offset.Y;
 
@@ -317,15 +289,32 @@ void ASunriseRoom::GenerateHallwayVertical(FRandomStream Stream, FVector Offset)
                 DoorOpeningNorth = CreateTraceBox(this, Name, FRotator(0.0f), DoorOpeningLocation, Extents);
                 Tiles[TileIndex].Type = ETile::Door;
             }
-            ++TileIndex;
         }
     }
 }
 
-void ASunriseRoom::GenerateFloor(FVector Location)
+void ASunriseRoom::AddRooms(FRandomStream Stream, int32 MapSizeX, int32 MapSizeY, int32 Rooms, TArray<FTile>& MapTiles)
 {
-    FTransform Transform(Location);
-    GenerateTile(Floor, Transform);
+    for(size_t RoomCount = 0; RoomCount < Rooms; ++RoomCount)
+    {
+        int32 RoomSizeX = Stream.RandRange(MinSize, MaxSize);
+        int32 RoomSizeY = Stream.RandRange(MinSize, MaxSize);
+        int32 RoomTileIndex = Stream.RandRange(1, (MapSizeX * MapSizeY)-1);
+
+        // Loop through starting at a specific tile index
+        for(size_t RowIndex = 0; RowIndex < RoomSizeX; ++RowIndex)
+        {
+            for(size_t ColumnIndex = 0; ColumnIndex < RoomSizeY; ++ColumnIndex)
+            {
+                if(MapTiles.IsValidIndex(RoomTileIndex))
+                {
+                    MapTiles[RoomTileIndex].Type = ETile::Floor;
+                }
+                ++RoomTileIndex;
+            }
+            RoomTileIndex += MapSizeY;
+        }
+    }
 }
 
 void ASunriseRoom::GenerateTile(UInstancedStaticMeshComponent* TileMesh, FTransform Transform)

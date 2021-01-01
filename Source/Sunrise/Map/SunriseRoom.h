@@ -85,12 +85,6 @@ public:
     UPROPERTY(EditAnywhere, Category = "Room")
     int32 MaxSize;
 
-    UPROPERTY(VisibleAnywhere, Category = "Room")
-    int32 RoomSizeX;
-
-    UPROPERTY(VisibleAnywhere, Category = "Room")
-    int32 RoomSizeY;
-
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     FVector MeshSize;
 
@@ -99,6 +93,9 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     class UInstancedStaticMeshComponent* Floor;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Tile")
+    class UInstancedStaticMeshComponent* Ceiling;
 
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     class UInstancedStaticMeshComponent* Wall;
@@ -135,14 +132,14 @@ public:
 
     void GenerateHallwayVertical(FRandomStream Stream, FVector Offset);
 
-    void GenerateFloor(FVector Location);
+    void AddRooms(FRandomStream Stream, int32 MapSizeX, int32 MapSizeY, int32 Rooms, TArray<FTile>& MapTiles);
 
+    void GenerateTile(UInstancedStaticMeshComponent* TileMesh, FTransform Transform);
+    
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
-    void GenerateTile(UInstancedStaticMeshComponent* TileMesh, FTransform Transform);
-
     UBoxComponent* CreateTraceBox(AActor* Parent, FName Name, FRotator Rotation, FVector Location, FVector Extents);
 };
