@@ -31,6 +31,9 @@ public:
     UPROPERTY(EditAnywhere, Category = "Map")
     bool bNewSeed;
 
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 Rooms;
+
     UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
 
@@ -51,4 +54,6 @@ protected:
 
 private:
     void GenerateMap();
+    void BinaryTreeMaze();
+    void AddRooms(int32 RoomCount);
 };
