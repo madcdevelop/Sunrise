@@ -102,14 +102,16 @@ void ASunriseMap::GenerateMap()
             {
                 int32 TileIndex = RowIndex * MapSizeY + ColumnIndex;
 
+                // Render Floor
                 if(MapTiles[TileIndex].Type == ETile::Floor)
                 {
                     CurrentRoom->GenerateTile(CurrentRoom->Floor, FTransform(MapTiles[TileIndex].Location));
                 }
-                else if(MapTiles[TileIndex].Type == ETile::None || RowIndex == 0)
+                // Render Walls
+                else if(MapTiles[TileIndex].Type == ETile::None)
                 {
-                    // check 4 tiles around None Tile
                     CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(MapTiles[TileIndex].Location + FVector(0.0f, 0.0f, CurrentRoom->MeshSize.Z)));
+                    
                     // North Wall
                     FTransform TileTransform;
                     if(MapTiles.IsValidIndex(TileIndex+MapSizeY))
@@ -149,6 +151,90 @@ void ASunriseMap::GenerateMap()
                             TileTransform = FTransform(FRotator(0.0f, -90.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location - FVector(0.0f, CurrentRoom->MeshSize.Y * 0.4, 0.0f));
                             CurrentRoom->GenerateTile(CurrentRoom->Wall, TileTransform);
+                        }
+                    }
+
+                    // Render Outer Corner Pillars
+                    // Northeast Pillar
+                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    {
+                        if(MapTiles[TileIndex+MapSizeY].Type == ETile::Floor && MapTiles[TileIndex+1].Type == ETile::Floor)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+                    // Northwest Pillar
+                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    {
+                        if(MapTiles[TileIndex+MapSizeY].Type == ETile::Floor && MapTiles[TileIndex-1].Type == ETile::Floor)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+                    // Southeast Pillar
+                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    {
+                        if(MapTiles[TileIndex-MapSizeY].Type == ETile::Floor && MapTiles[TileIndex+1].Type == ETile::Floor)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+                    // Southwest Pillar
+                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    {
+                        if(MapTiles[TileIndex-MapSizeY].Type == ETile::Floor && MapTiles[TileIndex-1].Type == ETile::Floor)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+
+                    // Render Inner Corner PIllars
+                    // Northeast Pillar
+                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY-1) && MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    {
+                        if(MapTiles[TileIndex-MapSizeY-1].Type == ETile::Floor && MapTiles[TileIndex-MapSizeY].Type == ETile::None && MapTiles[TileIndex-1].Type == ETile::None)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f),  
+                                                       MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+                    // Northwest Pillar
+                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY+1) && MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    {
+                        if(MapTiles[TileIndex-MapSizeY+1].Type == ETile::Floor && MapTiles[TileIndex-MapSizeY].Type == ETile::None && MapTiles[TileIndex+1].Type == ETile::None)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+                    // Southeast Pillar
+                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY-1) && MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    {
+                        if(MapTiles[TileIndex+MapSizeY-1].Type == ETile::Floor && MapTiles[TileIndex+MapSizeY].Type == ETile::None && MapTiles[TileIndex-1].Type == ETile::None)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
+                        }
+                    }
+                    // Southwest Pillar
+                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY+1) && MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    {
+                        if(MapTiles[TileIndex+MapSizeY+1].Type == ETile::Floor && MapTiles[TileIndex+MapSizeY].Type == ETile::None && MapTiles[TileIndex+1].Type == ETile::None)
+                        {
+                            TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
+                                                       MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
+                            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, TileTransform);
                         }
                     }
                 }
