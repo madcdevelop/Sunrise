@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Classes/GameFramework/PlayerStart.h"
 
 #include "SunriseRoom.h"
 
 #include "SunriseMap.generated.h"
-
 
 UCLASS()
 class SUNRISE_API ASunriseMap : public AActor
@@ -37,6 +37,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
 
+    UPROPERTY(EditAnywhere, Category = "Character")
+    TSubclassOf<class APlayerStart> PlayerStart;
+
     TArray<FTile> MapTiles;
 
 public:	
@@ -55,4 +58,6 @@ protected:
 private:
     void GenerateMap();
     void BinaryTreeMaze();
+    void SpawnPlayerStart();
+    void DeleteActors(TSubclassOf<AActor> ActorToDelete);
 };

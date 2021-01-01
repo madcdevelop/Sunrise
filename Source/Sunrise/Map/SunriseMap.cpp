@@ -47,12 +47,8 @@ void ASunriseMap::GenerateMap()
     if(DefaultRoom)
     {
         // Look for all actors and objects that exist for map generation and delete
-        TArray<AActor*> OutActors;
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), Room, OutActors);
-        for(auto Actor: OutActors)
-        {
-            Actor->Destroy();
-        }
+        DeleteActors(Room);
+        DeleteActors(PlayerStart);
         MapTiles.Empty();
 
         // Initialize empty map
@@ -240,6 +236,10 @@ void ASunriseMap::GenerateMap()
                 }
             }
         }
+
+        // Spawn Player Start
+        SpawnPlayerStart();
+
     }
 }
 
@@ -301,4 +301,22 @@ void ASunriseMap::BinaryTreeMaze()
             }
         }
     }
+}
+
+void ASunriseMap::SpawnPlayerStart()
+{
+    int32 PlayerStartIndex = Stream.RandRange(MapSizeY+1, (MapSizeY-1) * 2);
+
+    FActorSpawnParameters SpawnParams;
+    GetWorld()->SpawnActor<APlayerStart>(PlayerStart, FTransform(MapTiles[PlayerStartIndex].Location + FVector(0.0f, 0.0f, 110.f)));
+}
+
+void ASunriseMap::DeleteActors(TSubclassOf<AActor> ActorToDelete)
+{
+    TArray<AActor*> OutActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ActorToDelete, OutActors);
+    for(auto Actor: OutActors)
+    {
+        Actor->Destroy();
+    }    
 }
