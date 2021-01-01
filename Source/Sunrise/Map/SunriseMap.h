@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "SunriseRoom.h"
+
 #include "SunriseMap.generated.h"
 
 
@@ -28,8 +31,13 @@ public:
     UPROPERTY(EditAnywhere, Category = "Map")
     bool bNewSeed;
 
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 Rooms;
+
     UPROPERTY(EditDefaultsOnly, Category = "Room")
     TSubclassOf<class ASunriseRoom> Room;
+
+    TArray<FTile> MapTiles;
 
 public:	
 	// Sets default values for this actor's properties
@@ -46,4 +54,5 @@ protected:
 
 private:
     void GenerateMap();
+    void BinaryTreeMaze();
 };
