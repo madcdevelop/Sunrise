@@ -212,27 +212,3 @@ void ASunriseMap::BinaryTreeMaze()
         }
     }
 }
-
-void ASunriseMap::AddRooms(ASunriseRoom* DefaultRoom)
-{
-    for(size_t RoomCount = 0; RoomCount < Rooms; ++RoomCount)
-    {
-        int32 RoomSizeX = Stream.RandRange(DefaultRoom->MinSize, DefaultRoom->MaxSize);
-        int32 RoomSizeY = Stream.RandRange(DefaultRoom->MinSize, DefaultRoom->MaxSize);
-        int32 RoomTileIndex = Stream.RandRange(0, (MapSizeX * MapSizeY)-1);
-
-        // Loop through starting at a specific tile index
-        for(size_t RowIndex = 0; RowIndex < RoomSizeX; ++RowIndex)
-        {
-            for(size_t ColumnIndex = 0; ColumnIndex < RoomSizeY; ++ColumnIndex)
-            {
-                if(MapTiles.IsValidIndex(RoomTileIndex))
-                {
-                    MapTiles[RoomTileIndex].Type = ETile::Floor;
-                }
-                ++RoomTileIndex;
-            }
-            RoomTileIndex += MapSizeY;
-        }
-    }
-}
