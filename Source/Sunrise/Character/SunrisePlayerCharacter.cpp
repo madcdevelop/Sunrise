@@ -22,8 +22,8 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 
-    MaxCamArmLength = 800.0f;
-    MinCamArmLength = 400.0f;
+    MaxCamArmLength = 3000.0f;
+    MinCamArmLength = 1600.0f;
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
     SpringArmComponent->SetupAttachment(RootComponent);
     SpringArmComponent->TargetArmLength = MaxCamArmLength;
@@ -32,7 +32,6 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
     CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
     CameraComponent->bUsePawnControlRotation = false;
-
 }
 
 // Called when the game starts or when spawned
