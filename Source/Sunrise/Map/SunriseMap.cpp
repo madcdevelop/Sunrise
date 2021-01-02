@@ -317,7 +317,7 @@ void ASunriseMap::SpawnAICharacters(TSubclassOf<ACharacter> AICharacter)
     int32 Count = 0;
     while(Count < AISpawnCount)
     {
-        int32 AICharacterStartIndex = Stream.RandRange((MapSizeY * 2) + 1, MapSizeX * MapSizeY);
+        int32 AICharacterStartIndex = Stream.RandRange((MapSizeY * 2) + 1, MapSizeX * MapSizeY - 1);
         if(MapTiles[AICharacterStartIndex].Type == ETile::Floor)
         {
             GetWorld()->SpawnActor<ASunriseAICharacter>(AICharacter, FTransform(MapTiles[AICharacterStartIndex].Location + FVector(0.0f, 0.0f, 250.f)));
