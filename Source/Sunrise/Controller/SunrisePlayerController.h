@@ -13,5 +13,9 @@ UCLASS()
 class SUNRISE_API ASunrisePlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+    ASunrisePlayerController();
+
+    virtual void BeginPlay() override;
 };
