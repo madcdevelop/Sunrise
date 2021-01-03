@@ -10,6 +10,4 @@ ASunrisePlayerController::ASunrisePlayerController()
 void ASunrisePlayerController::BeginPlay()
 {
     Super::BeginPlay();
-
-    SetInputMode(FInputModeUIOnly());
 }
