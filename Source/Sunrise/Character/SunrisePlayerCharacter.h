@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "../Classes/Components/SceneCaptureComponent2D.h"
 
 #include "SunriseCharacter.h"
 #include "SunrisePlayerCharacter.generated.h"
@@ -40,6 +41,12 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
     bool bActiveCamera;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Minimap")
+    class USpringArmComponent* SpringArmComponentMiniMap;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Minimap")
+    class USceneCaptureComponent2D* CaptureComponent2DMiniMap;
 
     // Input variables
     float ZoomFactor;

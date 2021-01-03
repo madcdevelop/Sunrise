@@ -32,6 +32,13 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
     CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
     CameraComponent->bUsePawnControlRotation = false;
+
+    SpringArmComponentMiniMap = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponentMiniMap"));
+    SpringArmComponentMiniMap->SetupAttachment(RootComponent);
+
+    CaptureComponent2DMiniMap = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("CaptureComponent2DMiniMap"));
+    CaptureComponent2DMiniMap->SetupAttachment(SpringArmComponentMiniMap, USpringArmComponent::SocketName);
+
 }
 
 // Called when the game starts or when spawned
