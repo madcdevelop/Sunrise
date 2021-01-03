@@ -16,6 +16,9 @@ class SUNRISE_API ASunriseCharacter : public ACharacter
 
 public:
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
+    float MaxHealth;
+
 	FTimerHandle CharacterTimerHandle;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation")

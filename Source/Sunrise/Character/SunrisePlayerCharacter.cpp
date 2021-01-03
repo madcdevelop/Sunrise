@@ -177,9 +177,6 @@ void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* 
             float WeaponDamage = TakeDamage(Weapon->GetDamage(), WeaponDamageEvent, AICon, Weapon);
             SetHealth(GetHealth() - WeaponDamage);
 
-            GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Weapon hit character %s"), *MyOverlappedActor->GetName()));
-            GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("The %s character's health is %f"), *this->GetName(), GetHealth()));
-
             if(GetHealth() <= 0.0f){
                 SetActorEnableCollision(false);
                 StartAnimation(DeathAnimation, DeathAnimationTime);
