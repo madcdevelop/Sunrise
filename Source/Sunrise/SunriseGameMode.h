@@ -16,7 +16,7 @@ class SUNRISE_API ASunriseGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-protected:
+public:
     /** The widget class we will use as our menu when the game starts. */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
     TSubclassOf<UUserWidget> StartingWidgetClass;
