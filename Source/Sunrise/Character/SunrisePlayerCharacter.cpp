@@ -3,8 +3,11 @@
 
 #include "SunrisePlayerCharacter.h"
 #include "SunriseAICharacter.h"
+#include "../Controller/SunrisePlayerController.h"
 #include "../Weapons/SunriseWeapon.h"
+#include "../SunriseGameMode.h"
 
+#include "../Classes/Kismet/GameplayStatics.h"
 #include "Engine/GameEngine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -39,6 +42,7 @@ ASunrisePlayerCharacter::ASunrisePlayerCharacter()
     CaptureComponent2DMiniMap = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("CaptureComponent2DMiniMap"));
     CaptureComponent2DMiniMap->SetupAttachment(SpringArmComponentMiniMap, USpringArmComponent::SocketName);
 
+    SetTickableWhenPaused(true);
 }
 
 // Called when the game starts or when spawned
@@ -90,6 +94,9 @@ void ASunrisePlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
     PlayerInputComponent->BindAction(TEXT("Defend"), IE_Released, this, &ASunrisePlayerCharacter::EndDefend);
     PlayerInputComponent->BindAction(TEXT("UseItem"), IE_Pressed, this, &ASunrisePlayerCharacter::UseItem);
     PlayerInputComponent->BindAction(TEXT("Interact"), IE_Pressed, this, &ASunrisePlayerCharacter::Interact);
+
+    // Start button
+    PlayerInputComponent->BindAction(TEXT("Start"), IE_Pressed, this, &ASunrisePlayerCharacter::PauseGame).bExecuteWhenPaused = true;
     
 }
 
@@ -162,6 +169,33 @@ void ASunrisePlayerCharacter::UseItem()
 void ASunrisePlayerCharacter::Interact()
 {
     UE_LOG(LogTemp, Display, TEXT("The player is interacting."));
+}
+
+void ASunrisePlayerCharacter::PauseGame()
+{
+
+    ASunrisePlayerController* PlayerController = Cast<ASunrisePlayerController>(GetController());
+    ASunriseGameMode* GameMode = Cast<ASunriseGameMode>(GetWorld()->GetAuthGameMode());
+    if(PlayerController && GameMode)
+    {
+        if(!bIsGamePaused)
+        {
+            UE_LOG(LogTemp, Display, TEXT("Player has paused the game."));
+            PlayerController->bShowMouseCursor = true;
+            PlayerController->SetInputMode(FInputModeGameAndUI());
+            GameMode->ChangeMenuWidget(PauseMenuWidget);
+
+            bIsGamePaused = UGameplayStatics::SetGamePaused(GetWorld(), true);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Display, TEXT("Player has resumed the game."));
+            PlayerController->bShowMouseCursor = false;
+            PlayerController->SetInputMode(FInputModeGameOnly());
+            GameMode->ChangeMenuWidget(InGameWidget);
+            bIsGamePaused = UGameplayStatics::SetGamePaused(GetWorld(), false);
+        }
+    }
 }
 
 void ASunrisePlayerCharacter::OnDeath()

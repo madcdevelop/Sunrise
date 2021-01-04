@@ -53,6 +53,15 @@ protected:
     bool bZoomingIn;
     bool bZoomingOut;
 
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    class TSubclassOf<class UUserWidget> InGameWidget;
+
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    class TSubclassOf<class UUserWidget> PauseMenuWidget;
+
+private:
+    bool bIsGamePaused;
+
 public:
     // Sets default values for this character's properties
     ASunrisePlayerCharacter();
@@ -80,6 +89,8 @@ protected:
 
     void UseItem();
     void Interact();
+
+    void PauseGame();
 
     virtual void OnDeath() override;
     
