@@ -49,6 +49,9 @@ public:
 
     TArray<FTile> MapTiles;
 
+    UPROPERTY(EditAnywhere, Category = "Goal")
+    TSubclassOf<class ASunriseItem> Key;
+
 public:	
 	// Sets default values for this actor's properties
 	ASunriseMap();

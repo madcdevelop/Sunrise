@@ -6,11 +6,13 @@
 #include "GameFramework/Actor.h"
 #include "SunriseItem.generated.h"
 
-enum Items {
-    SHIELD = 0,
-    HOOKSHOT,
-    BOOMERANG,
-    MAGICWAND
+UENUM(BlueprintType)
+enum EItems {
+    Shield = 0,
+    Hookshot,
+    Boomerang,
+    MagicWand,
+    GoldenKey
 };
 
 UCLASS()
@@ -30,11 +32,8 @@ protected:
     virtual void BeginPlay() override;
 
 protected:
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
-    int32 ItemId;
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-    FString Name;
+    UPROPERTY(EditDefaultsOnly, Category = "Properties")
+    TEnumAsByte<EItems> ItemsEnum;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USceneComponent* Root;
