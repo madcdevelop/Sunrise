@@ -50,7 +50,7 @@ public:
     TArray<FTile> MapTiles;
 
     UPROPERTY(EditAnywhere, Category = "Goal")
-    TSubclassOf<class ASunriseItem> Key;
+    TSubclassOf<class AActor> GoldenKey;
 
 public:	
 	// Sets default values for this actor's properties
@@ -71,4 +71,5 @@ private:
     void SpawnPlayerStart();
     void SpawnAICharacters(TSubclassOf<ACharacter> AICharacter);
     void DeleteActors(TSubclassOf<AActor> ActorToDelete);
+    void SpawnActors(int32 ActorSpawnCount, TSubclassOf<AActor> ActorToSpawn);
 };

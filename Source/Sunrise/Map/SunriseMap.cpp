@@ -241,6 +241,7 @@ void ASunriseMap::GenerateMap()
         // Spawn
         SpawnPlayerStart();
         SpawnAICharacters(MeleeAICharacter);
+        SpawnActors(3, GoldenKey);
     }
 }
 
@@ -336,3 +337,19 @@ void ASunriseMap::DeleteActors(TSubclassOf<AActor> ActorToDelete)
         Actor->Destroy();
     }    
 }
+
+void ASunriseMap::SpawnActors(int32 ActorSpawnCount, TSubclassOf<AActor> ActorToSpawn)
+{
+    int32 Count = 0;
+    while(Count < ActorSpawnCount)
+    {
+        int32 RandomIndexX = Stream.RandRange(1, MapSizeX-1);
+        int32 RandomIndexY = Stream.RandRange(1, MapSizeY-1);
+        if(MapTiles[RandomIndexX * RandomIndexY].Type == ETile::Floor)
+        {
+            GetWorld()->SpawnActor<AActor>(ActorToSpawn, FTransform(MapTiles[RandomIndexX * RandomIndexY].Location + FVector(0.0f, 0.0f, 23.0f)));
+            ++Count;
+        }
+    }
+}
+
