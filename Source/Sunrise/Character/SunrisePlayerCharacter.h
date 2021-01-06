@@ -12,8 +12,10 @@
 #include "Camera/CameraComponent.h"
 #include "../Classes/Components/SceneCaptureComponent2D.h"
 
+#include "../Items/SunriseItem.h"
 #include "SunriseCharacter.h"
 #include "SunrisePlayerCharacter.generated.h"
+
 
 /**
  *  The character that the player controls.
@@ -22,6 +24,10 @@ UCLASS()
 class SUNRISE_API ASunrisePlayerCharacter : public ASunriseCharacter
 {
     GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+    TMap<TEnumAsByte<EItems>, int32> ItemInventory;
 
 protected:
 
