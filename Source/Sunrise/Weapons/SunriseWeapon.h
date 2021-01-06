@@ -6,11 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "SunriseWeapon.generated.h"
 
-enum Weapons {
-    SWORD = 0,
-    SPEAR,
-    WAND,
-    BOMB
+UENUM(BlueprintType)
+enum EWeapons {
+    Sword = 0,
+    Spear,
+    Wand,
+    Bomb
 };
 
 /**
@@ -22,12 +23,8 @@ class SUNRISE_API ASunriseWeapon : public AActor
     GENERATED_BODY()
 
 protected:
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Properties")
-    int32 WeaponId;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Properties")
-    FString Name;
+    UPROPERTY(EditDefaultsOnly, Category = "Properties")
+    TEnumAsByte<EWeapons> WeaponsEnum;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Properties")
     float Damage;
@@ -46,7 +43,6 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     FORCEINLINE float   GetDamage() const { return Damage; }
-    FORCEINLINE FString GetName()   const { return Name; }
     
 protected:
     // Called when the game starts or when spawned
