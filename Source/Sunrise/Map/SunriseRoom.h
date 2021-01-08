@@ -103,6 +103,9 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Tile")
     class UInstancedStaticMeshComponent* PillarCorner;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Tile")
+    class UInstancedStaticMeshComponent* WallDoor;
+
     UPROPERTY(EditAnywhere, Category = "Room")
     class UBoxComponent* DoorOpeningSouth;
 

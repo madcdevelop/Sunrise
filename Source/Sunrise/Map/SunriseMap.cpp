@@ -242,6 +242,29 @@ void ASunriseMap::GenerateMap()
         SpawnPlayerStart();
         SpawnAICharacters(MeleeAICharacter);
         SpawnActors(3, GoldenKey);
+
+        // Spawn End Point
+        // pick random tile near end
+        while(true)
+        {
+            int32 RandomTileEndIndex = Stream.RandRange((MapSizeX * MapSizeY) - (MapSizeY*2) + 1, (MapSizeX * MapSizeY) - MapSizeY -2);
+            // Opening to the left
+            if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
+               MapTiles[RandomTileEndIndex+MapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MapSizeY].Type == ETile::None &&
+               MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::Floor)
+            {
+                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 90.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 270.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(500.0f, -500.0f, 0.0f)));
+                break;
+            }
+        }
+        
+        // spawn wall
+        // spawn door and collision
+
+
+
     }
 }
 

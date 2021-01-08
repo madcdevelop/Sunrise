@@ -65,7 +65,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     class TSubclassOf<class UUserWidget> PauseMenuWidget;
 
-private:
     bool bIsGamePaused;
 
 public:

@@ -20,6 +20,7 @@ ASunriseRoom::ASunriseRoom()
     Ceiling = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Ceiling"));
     Wall = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Wall"));
     PillarCorner = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("PillarCorner"));
+    WallDoor = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallDoor"));
 }
 
 // Called when the game starts or when spawned
