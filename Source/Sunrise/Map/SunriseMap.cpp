@@ -17,6 +17,10 @@ ASunriseMap::ASunriseMap()
 void ASunriseMap::BeginPlay()
 {
 	Super::BeginPlay();
+
+    Seed = FMath::RandRange(1, 900000);
+    Stream.Initialize(Seed);
+    GenerateMap();
 }
 
 // Called every frame
