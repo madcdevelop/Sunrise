@@ -19,10 +19,7 @@ class SUNRISE_API ASunriseMap : public AActor
 
 public:
     UPROPERTY(EditAnywhere, Category = "Map")
-    int32 MapSizeX;
-
-    UPROPERTY(EditAnywhere, Category = "Map")
-    int32 MapSizeY;
+    bool bNewSeed;
 
     UPROPERTY(EditAnywhere, Category = "Map")
     FRandomStream Stream;
@@ -31,30 +28,36 @@ public:
     int32 Seed;
 
     UPROPERTY(EditAnywhere, Category = "Map")
-    bool bNewSeed;
+    int32 MapSizeX;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 MapSizeY;
 
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 Rooms;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Room")
-    TSubclassOf<class ASunriseRoom> Room;
-
-    UPROPERTY(EditAnywhere, Category = "Player Character")
-    TSubclassOf<class APlayerStart> PlayerStart;
-
-    UPROPERTY(EditAnywhere, Category = "AI Character")
+    UPROPERTY(EditAnywhere, Category = "Map")
     int32 AISpawnCount;
 
-    UPROPERTY(EditAnywhere, Category = "AI Character")
+    UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+    TSubclassOf<class ASunriseRoom> Room;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
+    TSubclassOf<class APlayerStart> PlayerStart;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
     TSubclassOf<class ASunriseAICharacter> MeleeAICharacter;
 
-    UPROPERTY(EditAnywhere, Category = "Door")
+    UPROPERTY(EditAnywhere, Category = "Spawn")
     TSubclassOf<class ASunriseDoor> Door;
 
-    TArray<FTile> MapTiles;
-
-    UPROPERTY(EditAnywhere, Category = "Goal")
+    UPROPERTY(EditAnywhere, Category = "Spawn")
     TSubclassOf<class AActor> GoldenKey;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
+    TSubclassOf<class AActor> EndLevelTrigger;
+
+    TArray<FTile> MapTiles;
 
 public:	
 	// Sets default values for this actor's properties
