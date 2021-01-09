@@ -8,6 +8,7 @@
 
 #include "SunriseRoom.h"
 #include "../Character/SunriseAICharacter.h"
+#include "../World/SunriseDoor.h"
 
 #include "SunriseMap.generated.h"
 
@@ -46,6 +47,9 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "AI Character")
     TSubclassOf<class ASunriseAICharacter> MeleeAICharacter;
+
+    UPROPERTY(EditAnywhere, Category = "Door")
+    TSubclassOf<class ASunriseDoor> Door;
 
     TArray<FTile> MapTiles;
 
