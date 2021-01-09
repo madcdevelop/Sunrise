@@ -50,6 +50,9 @@ void ASunriseMap::GenerateMap()
         DeleteActors(Room);
         DeleteActors(PlayerStart);
         DeleteActors(MeleeAICharacter);
+        DeleteActors(Door);
+        DeleteActors(GoldenKey);
+        DeleteActors(EndLevelTrigger);
         MapTiles.Empty();
 
         // Initialize empty map
@@ -241,6 +244,46 @@ void ASunriseMap::GenerateMap()
         // Spawn
         SpawnPlayerStart();
         SpawnAICharacters(MeleeAICharacter);
+        SpawnActors(3, GoldenKey);
+
+        // Spawn End of Level
+        // Reverse through map tiles until a valid endpoint is found
+        for(int MapIndex = (MapSizeX * MapSizeY)-1; MapIndex > (MapSizeX * MapSizeY) / 2; --MapIndex)
+        {
+            int32 RandomTileEndIndex = MapIndex;
+
+            // Opening to the left
+            if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
+               MapTiles[RandomTileEndIndex+MapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MapSizeY].Type == ETile::None &&
+               MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::Floor)
+            {
+                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 90.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 270.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(500.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
+                GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, -90.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(161.0f, -530.0f, 0.0f)));
+                GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
+                break;
+            }
+
+            // Opening to the bottom
+            if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
+               MapTiles[RandomTileEndIndex+MapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MapSizeY].Type == ETile::Floor &&
+               MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::None)
+            {
+                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
+                CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
+                GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-530.0f, -161.0f, 0.0f)));
+                GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
+                break;
+            }
+
+        }
+
     }
 }
 
@@ -336,3 +379,19 @@ void ASunriseMap::DeleteActors(TSubclassOf<AActor> ActorToDelete)
         Actor->Destroy();
     }    
 }
+
+void ASunriseMap::SpawnActors(int32 ActorSpawnCount, TSubclassOf<AActor> ActorToSpawn)
+{
+    int32 Count = 0;
+    while(Count < ActorSpawnCount)
+    {
+        int32 RandomIndexX = Stream.RandRange(1, MapSizeX-1);
+        int32 RandomIndexY = Stream.RandRange(1, MapSizeY-1);
+        if(MapTiles[RandomIndexX * RandomIndexY].Type == ETile::Floor)
+        {
+            GetWorld()->SpawnActor<AActor>(ActorToSpawn, FTransform(MapTiles[RandomIndexX * RandomIndexY].Location + FVector(0.0f, 0.0f, 23.0f)));
+            ++Count;
+        }
+    }
+}
+

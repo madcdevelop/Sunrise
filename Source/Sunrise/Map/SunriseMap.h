@@ -8,6 +8,7 @@
 
 #include "SunriseRoom.h"
 #include "../Character/SunriseAICharacter.h"
+#include "../World/SunriseDoor.h"
 
 #include "SunriseMap.generated.h"
 
@@ -18,10 +19,7 @@ class SUNRISE_API ASunriseMap : public AActor
 
 public:
     UPROPERTY(EditAnywhere, Category = "Map")
-    int32 MapSizeX;
-
-    UPROPERTY(EditAnywhere, Category = "Map")
-    int32 MapSizeY;
+    bool bNewSeed;
 
     UPROPERTY(EditAnywhere, Category = "Map")
     FRandomStream Stream;
@@ -30,22 +28,34 @@ public:
     int32 Seed;
 
     UPROPERTY(EditAnywhere, Category = "Map")
-    bool bNewSeed;
+    int32 MapSizeX;
+
+    UPROPERTY(EditAnywhere, Category = "Map")
+    int32 MapSizeY;
 
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 Rooms;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Room")
-    TSubclassOf<class ASunriseRoom> Room;
-
-    UPROPERTY(EditAnywhere, Category = "Player Character")
-    TSubclassOf<class APlayerStart> PlayerStart;
-
-    UPROPERTY(EditAnywhere, Category = "AI Character")
+    UPROPERTY(EditAnywhere, Category = "Map")
     int32 AISpawnCount;
 
-    UPROPERTY(EditAnywhere, Category = "AI Character")
+    UPROPERTY(EditDefaultsOnly, Category = "Spawn")
+    TSubclassOf<class ASunriseRoom> Room;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
+    TSubclassOf<class APlayerStart> PlayerStart;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
     TSubclassOf<class ASunriseAICharacter> MeleeAICharacter;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
+    TSubclassOf<class ASunriseDoor> Door;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
+    TSubclassOf<class AActor> GoldenKey;
+
+    UPROPERTY(EditAnywhere, Category = "Spawn")
+    TSubclassOf<class AActor> EndLevelTrigger;
 
     TArray<FTile> MapTiles;
 
@@ -68,4 +78,5 @@ private:
     void SpawnPlayerStart();
     void SpawnAICharacters(TSubclassOf<ACharacter> AICharacter);
     void DeleteActors(TSubclassOf<AActor> ActorToDelete);
+    void SpawnActors(int32 ActorSpawnCount, TSubclassOf<AActor> ActorToSpawn);
 };

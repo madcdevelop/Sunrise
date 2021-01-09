@@ -2,6 +2,7 @@
 
 
 #include "SunriseItem.h"
+#include "../Character/SunrisePlayerCharacter.h"
 
 // Sets default values
 ASunriseItem::ASunriseItem()
@@ -10,16 +11,10 @@ ASunriseItem::ASunriseItem()
     PrimaryActorTick.bCanEverTick = true;
 
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-    if (Root)
-    {
-        RootComponent = Root;
-    }
+    if(Root) RootComponent = Root;
 
     ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
-    if (ItemMesh)
-    {
-        ItemMesh->SetupAttachment(Root);
-    }
+    if(ItemMesh) ItemMesh->SetupAttachment(Root);
 
 }
 
@@ -27,6 +22,8 @@ ASunriseItem::ASunriseItem()
 void ASunriseItem::BeginPlay()
 {
     Super::BeginPlay();
+
+    OnActorBeginOverlap.AddDynamic(this, &ASunriseItem::OnBeginOverlap);
     
 }
 
@@ -37,3 +34,23 @@ void ASunriseItem::Tick(float DeltaTime)
 
 }
 
+void ASunriseItem::OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
+{
+    ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(OtherActor);
+
+    // add item to inventory map in character
+    if(PlayerChar)
+    {
+
+        if(PlayerChar->ItemInventory.Contains(ItemsEnum))
+        {
+            int32 CurrentCount = PlayerChar->ItemInventory[ItemsEnum];
+            PlayerChar->ItemInventory.Emplace(ItemsEnum, ++CurrentCount);
+        }
+        else
+        {
+            PlayerChar->ItemInventory.Add(ItemsEnum, 1);
+        }
+        MyOverlappedActor->Destroy();
+    }
+}
