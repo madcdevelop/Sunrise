@@ -25,6 +25,8 @@ void ASunriseDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+    TargetRotation = GetActorRotation() + FRotator(0.0f, 90.0f, 0.0f);
+
     OnActorBeginOverlap.AddDynamic(this, &ASunriseDoor::OnOverlap);
 }
 
@@ -45,11 +47,16 @@ void ASunriseDoor::OnOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
     ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(OtherActor);
 
-    // @TODO: Find key and check value == 3 to trigger overlap
     if(PlayerChar)
     {
-        bIsOverlap = true;
-        TargetRotation = GetActorRotation() + FRotator(0.0f, 90.0f, 0.0f);
-        // @TODO: Remove 3 keys from inventory
+        int32* KeyCount = PlayerChar->ItemInventory.Find(EItems::GoldenKey);
+        if(KeyCount)
+        {
+            if((*KeyCount) == 3)
+            {
+                bIsOverlap = true;
+                PlayerChar->ItemInventory.Remove(EItems::GoldenKey);   
+            } 
+        }
     }
 }
