@@ -14,17 +14,7 @@ UENUM()
 enum class ETile
 {
     None = 0,
-    Floor,
-    FloorHallway,
-    Door,
-    WallSouth,
-    WallEast,
-    WallNorth,
-    WallWest,
-    CornerWallSouthWest,
-    CornerWallSouthEast,
-    CornerWallNorthWest,
-    CornerWallNorthEast
+    Floor
 };
 
 UENUM()
@@ -43,13 +33,11 @@ struct FTile
     GENERATED_BODY()
 
     FTile()
-        : Type(ETile::None), RowIndexMap(0), ColumnIndexMap(0), RowIndexRoom(0), ColumnIndexRoom(0), 
-          Location(FVector(0.0f, 0.0f, 0.0f)), Parent(nullptr)
+        : Type(ETile::None), RowIndexMap(0), ColumnIndexMap(0), Location(FVector(0.0f, 0.0f, 0.0f))
     {}
 
-    FTile(ETile InType, int32 InRowIndexMap, int32 InColumnIndexMap, int32 InRowIndexRoom, int32 InColumnIndexRoom, FVector InLocation, FTile* InParent)
-        : Type(InType), RowIndexMap(InRowIndexMap), ColumnIndexMap(InColumnIndexMap), RowIndexRoom(InRowIndexRoom), ColumnIndexRoom(InColumnIndexRoom), 
-          Location(InLocation), Parent(InParent)
+    FTile(ETile InType, int32 InRowIndexMap, int32 InColumnIndexMap, FVector InLocation)
+        : Type(InType), RowIndexMap(InRowIndexMap), ColumnIndexMap(InColumnIndexMap), Location(InLocation)
     {}
 
     UPROPERTY(VisibleAnywhere)
@@ -62,15 +50,7 @@ struct FTile
     int32 ColumnIndexMap;
 
     UPROPERTY(VisibleAnywhere)
-    int32 RowIndexRoom;
-
-    UPROPERTY(VisibleAnywhere)
-    int32 ColumnIndexRoom;
-
-    UPROPERTY(VisibleAnywhere)
     FVector Location;
-
-    FTile* Parent;
 };
 
 UCLASS()
@@ -128,12 +108,6 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-    void GenerateRoom(TArray<FTile>& MapTiles, int32 StartMapTileIndex, int32 MapSizeY, FRandomStream Stream, FVector Offset);
-
-    void GenerateHallwayHorizontal(FRandomStream Stream, FVector Offset);
-
-    void GenerateHallwayVertical(FRandomStream Stream, FVector Offset);
 
     void AddRooms(FRandomStream Stream, int32 MapSizeX, int32 MapSizeY, int32 Rooms, TArray<FTile>& MapTiles);
 

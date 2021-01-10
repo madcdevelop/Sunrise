@@ -67,7 +67,7 @@ void ASunriseMap::GenerateMap()
                 int32 LocationX = (TileIndex / MapSizeY) * DefaultRoom->MeshSize.X;
                 int32 LocationY = (TileIndex % MapSizeY) * DefaultRoom->MeshSize.Y;
 
-                MapTiles.Add(FTile(ETile::None, RowIndex, ColumnIndex, -1, -1, FVector(LocationX, LocationY, 0.0f), nullptr));
+                MapTiles.Add(FTile(ETile::None, RowIndex, ColumnIndex, FVector(LocationX, LocationY, 0.0f)));
             }
         }
 
