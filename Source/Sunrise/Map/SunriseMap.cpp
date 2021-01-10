@@ -17,10 +17,6 @@ ASunriseMap::ASunriseMap()
 void ASunriseMap::BeginPlay()
 {
 	Super::BeginPlay();
-
-    Seed = FMath::RandRange(1, 900000);
-    Stream.Initialize(Seed);
-    GenerateMap();
 }
 
 // Called every frame
@@ -389,11 +385,10 @@ void ASunriseMap::SpawnActors(int32 ActorSpawnCount, TSubclassOf<AActor> ActorTo
     int32 Count = 0;
     while(Count < ActorSpawnCount)
     {
-        int32 RandomIndexX = Stream.RandRange(1, MapSizeX-1);
-        int32 RandomIndexY = Stream.RandRange(1, MapSizeY-1);
-        if(MapTiles[RandomIndexX * RandomIndexY].Type == ETile::Floor)
+        int32 RandomIndex = Stream.RandRange((MapSizeX * MapSizeY * 0.2f) - 1, (MapSizeX * MapSizeY) - 1);
+        if(MapTiles[RandomIndex].Type == ETile::Floor)
         {
-            GetWorld()->SpawnActor<AActor>(ActorToSpawn, FTransform(MapTiles[RandomIndexX * RandomIndexY].Location + FVector(0.0f, 0.0f, 23.0f)));
+            GetWorld()->SpawnActor<AActor>(ActorToSpawn, FTransform(MapTiles[RandomIndex].Location + FVector(0.0f, 0.0f, 23.0f)));
             ++Count;
         }
     }
