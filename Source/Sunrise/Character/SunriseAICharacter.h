@@ -35,7 +35,6 @@ protected:
     
 private:
     UFUNCTION()
-    void OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor);
-
+    void OnRadialDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, FVector Origin, FHitResult HitInfo, class AController* InstigatedBy, AActor* DamageCauser);
 
 };

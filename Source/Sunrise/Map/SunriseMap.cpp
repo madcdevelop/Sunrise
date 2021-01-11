@@ -358,12 +358,16 @@ void ASunriseMap::SpawnPlayerStart()
 void ASunriseMap::SpawnAICharacters(TSubclassOf<ACharacter> AICharacter)
 {
     int32 Count = 0;
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
     while(Count < AISpawnCount)
     {
         int32 AICharacterStartIndex = Stream.RandRange((MapSizeY * 2) + 1, MapSizeX * MapSizeY - 1);
+        int32 TileRandomX = Stream.RandRange(1, 450);
+        int32 TileRandomY = Stream.RandRange(1, 450);
         if(MapTiles[AICharacterStartIndex].Type == ETile::Floor)
         {
-            GetWorld()->SpawnActor<ASunriseAICharacter>(AICharacter, FTransform(MapTiles[AICharacterStartIndex].Location + FVector(0.0f, 0.0f, 250.f)));
+            GetWorld()->SpawnActor<ASunriseAICharacter>(AICharacter, FTransform(MapTiles[AICharacterStartIndex].Location + FVector(TileRandomX, TileRandomY, 250.f)), SpawnParams);
             ++Count;
         }
 

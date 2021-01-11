@@ -8,6 +8,8 @@
 #include "../SunriseGameMode.h"
 
 #include "../Classes/Kismet/GameplayStatics.h"
+#include "../Classes/Kismet/KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
 #include "Engine/GameEngine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -147,6 +149,37 @@ void ASunrisePlayerCharacter::Attack()
 
     UE_LOG(LogTemp, Display, TEXT("The player is attacking."));
 
+    /** Radial Damage */
+    TArray <FHitResult> OutHits;
+    FVector StartLocation = GetActorLocation();
+    FVector EndLocation = StartLocation + GetActorForwardVector() * 750.0f;
+
+    FCollisionShape MyColShape = FCollisionShape::MakeBox(FVector(500.0f, 500.0f, 500.0f));
+    bool bIsHit = GetWorld()->SweepMultiByChannel(OutHits, EndLocation, EndLocation, FQuat::Identity, ECC_WorldDynamic, MyColShape);
+    DrawDebugBox(GetWorld(), EndLocation, MyColShape.GetExtent(), FColor::Red, false, 2.0f);
+
+    if(bIsHit)
+    {
+        TArray<AActor*> IgnoreActors;
+        for(auto& Hit : OutHits)
+        {
+            ASunriseAICharacter* AIChar = Cast<ASunriseAICharacter>(Hit.GetActor());
+            if(AIChar)
+            {
+                TArray<AActor*> AttachedActors;
+                AIChar->GetAttachedActors(AttachedActors);
+                for(auto & Actor : AttachedActors)
+                {
+                    ASunriseWeapon* Weapon = Cast<ASunriseWeapon>(Actor);
+                    if(Weapon)
+                    {
+                        UGameplayStatics::ApplyRadialDamage(GetWorld(), Weapon->GetDamage(), Hit.ImpactPoint, 250.0f, WeaponDamageType, IgnoreActors, this, GetController());
+                        IgnoreActors.Add(AIChar);         
+                    }
+                }
+            }
+        }
+    }
 }
 
 void ASunrisePlayerCharacter::StartDefend()

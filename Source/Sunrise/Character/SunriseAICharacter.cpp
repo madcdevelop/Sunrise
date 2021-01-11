@@ -14,7 +14,7 @@ void ASunriseAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    OnActorBeginOverlap.AddDynamic(this, &ASunriseAICharacter::OnBeginOverlap);
+    OnTakeRadialDamage.AddDynamic(this, &ASunriseAICharacter::OnRadialDamage);
 }
 
 void ASunriseAICharacter::Attack()
@@ -29,26 +29,14 @@ void ASunriseAICharacter::OnDeath()
     Super::OnDeath();
 }
 
-void ASunriseAICharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor)
+void ASunriseAICharacter::OnRadialDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, FVector Origin, FHitResult HitInfo, class AController* InstigatedBy, AActor* DamageCauser)
 {
-    ASunriseWeapon* Weapon = Cast<ASunriseWeapon>(OtherActor);
+    Health = Health - Damage;
 
-    if(Weapon){
-        
-        ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(Weapon->GetAttachParentActor());
-        if(PlayerChar && PlayerChar->GetIsAttacking()){
-
-            FDamageEvent WeaponDamageEvent;
-            AController* PlayerCon = PlayerChar->GetInstigatorController();
-
-            float WeaponDamage = TakeDamage(Weapon->GetDamage(), WeaponDamageEvent, PlayerCon, Weapon);
-            SetHealth(GetHealth() - WeaponDamage);
-
-            if(GetHealth() <= 0.0f){
-                SetActorEnableCollision(false);
-                StartAnimation(DeathAnimation, DeathAnimationTime);
-                GetWorld()->GetTimerManager().SetTimer(CharacterTimerHandle, this, &ASunriseAICharacter::OnDeath, DeathAnimationTime, false);
-            }
-        }
-    }   
+    if(Health <= 0.0f)
+    {
+        SetActorEnableCollision(false);
+        StartAnimation(DeathAnimation, DeathAnimationTime);
+        GetWorld()->GetTimerManager().SetTimer(CharacterTimerHandle, this, &ASunriseAICharacter::OnDeath, DeathAnimationTime, false);
+    }
 }

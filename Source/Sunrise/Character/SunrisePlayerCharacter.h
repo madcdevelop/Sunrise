@@ -67,6 +67,9 @@ protected:
 
     bool bIsGamePaused;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
+    TSubclassOf<UDamageType> WeaponDamageType;
+
 public:
     // Sets default values for this character's properties
     ASunrisePlayerCharacter();
