@@ -68,7 +68,15 @@ protected:
     bool bIsGamePaused;
 
     UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
-    TSubclassOf<UDamageType> WeaponDamageType;
+    TSubclassOf<class UDamageType> WeaponDamageType;
+
+	FTimerHandle AttackEffectTimerHandle;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+    float AttackEffectAnimationTime;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Effects")
+    TSubclassOf<class AActor> AttackEffect;
 
 public:
     // Sets default values for this character's properties
@@ -105,5 +113,8 @@ protected:
 private:
     UFUNCTION()
     void OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor);
+
+    UFUNCTION()
+    void DestroyEffect();
 
 };

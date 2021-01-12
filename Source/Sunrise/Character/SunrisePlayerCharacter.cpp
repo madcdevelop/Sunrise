@@ -53,6 +53,8 @@ void ASunrisePlayerCharacter::BeginPlay()
     Super::BeginPlay();
 
     OnActorBeginOverlap.AddDynamic(this, &ASunrisePlayerCharacter::OnBeginOverlap);
+
+    
 }
 
 // Called every frame
@@ -156,7 +158,10 @@ void ASunrisePlayerCharacter::Attack()
 
     FCollisionShape MyColShape = FCollisionShape::MakeBox(FVector(500.0f, 500.0f, 500.0f));
     bool bIsHit = GetWorld()->SweepMultiByChannel(OutHits, EndLocation, EndLocation, FQuat::Identity, ECC_WorldDynamic, MyColShape);
-    DrawDebugBox(GetWorld(), EndLocation, MyColShape.GetExtent(), FColor::Red, false, 2.0f);
+    // Uncomment to draw hit box of attack
+    // DrawDebugBox(GetWorld(), EndLocation, MyColShape.GetExtent(), FColor::Red, false, 2.0f);
+    GetWorld()->SpawnActor<AActor>(AttackEffect, FTransform(FVector(EndLocation.X, EndLocation.Y, 0.0f)));
+    GetWorld()->GetTimerManager().SetTimer(AttackEffectTimerHandle, this, &ASunrisePlayerCharacter::DestroyEffect, AttackEffectAnimationTime, false);
 
     if(bIsHit)
     {
@@ -259,4 +264,14 @@ void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* 
             
         }
     }
+}
+
+void ASunrisePlayerCharacter::DestroyEffect()
+{
+    TArray<AActor*> OutActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AttackEffect, OutActors);
+    for(auto Actor: OutActors)
+    {
+        Actor->Destroy();
+    }   
 }
