@@ -27,6 +27,12 @@ public:
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 Seed;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Map")
+    int32 MaxMapSizeX;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Map")
+    int32 MaxMapSizeY;
+
     UPROPERTY(EditAnywhere, Category = "Map")
     int32 MapSizeX;
 

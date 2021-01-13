@@ -11,7 +11,20 @@ ASunriseMap::ASunriseMap()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-    
+    MaxMapSizeX = 25;
+    MaxMapSizeY = 25;
+
+    for(size_t RowIndex = 0; RowIndex < MaxMapSizeX; ++RowIndex)
+    {
+        for(size_t ColumnIndex = 0; ColumnIndex < MaxMapSizeY; ++ColumnIndex)
+        {
+            int32 TileIndex = RowIndex * MaxMapSizeY + ColumnIndex;
+            int32 LocationX = (TileIndex / MaxMapSizeY) * 1000.0f;
+            int32 LocationY = (TileIndex % MaxMapSizeY) * 1000.0f;
+
+            MapTiles.Add(FTile(ETile::None, RowIndex, ColumnIndex, FVector(LocationX, LocationY, 0.0f)));
+        }
+    }
 }
 
 // Called when the game starts or when spawned
@@ -58,21 +71,19 @@ void ASunriseMap::GenerateMap()
         DeleteActors(Door);
         DeleteActors(GoldenKey);
         DeleteActors(EndLevelTrigger);
-        MapTiles.Empty();
 
         // Initialize empty map
         if(MapSizeX % 2 == 0) ++MapSizeX;
         if(MapSizeY % 2 == 0) ++MapSizeY;
         
-        for(size_t RowIndex = 0; RowIndex < MapSizeX; ++RowIndex)
+        // reset map on next map generation
+        for(size_t RowIndex = 0; RowIndex < MaxMapSizeX; ++RowIndex)
         {
-            for(size_t ColumnIndex = 0; ColumnIndex < MapSizeY; ++ColumnIndex)
+            for(size_t ColumnIndex = 0; ColumnIndex < MaxMapSizeY; ++ColumnIndex)
             {
-                int32 TileIndex = RowIndex * MapSizeY + ColumnIndex;
-                int32 LocationX = (TileIndex / MapSizeY) * DefaultRoom->MeshSize.X;
-                int32 LocationY = (TileIndex % MapSizeY) * DefaultRoom->MeshSize.Y;
+                int32 TileIndex = RowIndex * MaxMapSizeY + ColumnIndex;
 
-                MapTiles.Add(FTile(ETile::None, RowIndex, ColumnIndex, FVector(LocationX, LocationY, 0.0f)));
+                MapTiles[TileIndex].Type = ETile::None;
             }
         }
 
@@ -82,12 +93,12 @@ void ASunriseMap::GenerateMap()
         // Add rooms
         DefaultRoom->AddRooms(Stream, MapSizeX, MapSizeY, Rooms, MapTiles);
 
-        // Put outside of map back to None to the map.
+        // Put outside of map back to None to the map. Rooms hit edges.
         for(size_t RowIndex = 0; RowIndex < MapSizeX; ++RowIndex)
         {
             for(size_t ColumnIndex = 0; ColumnIndex < MapSizeY; ++ColumnIndex)
             {
-                int32 TileIndex = RowIndex * MapSizeY + ColumnIndex;
+                int32 TileIndex = RowIndex * MaxMapSizeY + ColumnIndex;
 
                 if(RowIndex == 0 || ColumnIndex == 0 || RowIndex == MapSizeX-1 || ColumnIndex == MapSizeY-1)
                 {
@@ -105,7 +116,7 @@ void ASunriseMap::GenerateMap()
         {
             for(size_t ColumnIndex = 0; ColumnIndex < MapSizeY; ++ColumnIndex)
             {
-                int32 TileIndex = RowIndex * MapSizeY + ColumnIndex;
+                int32 TileIndex = RowIndex * MaxMapSizeY + ColumnIndex;
 
                 // Render Floor
                 if(MapTiles[TileIndex].Type == ETile::Floor)
@@ -119,9 +130,9 @@ void ASunriseMap::GenerateMap()
                     
                     // North Wall
                     FTransform TileTransform;
-                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY))
+                    if(MapTiles.IsValidIndex(TileIndex+MaxMapSizeY))
                     {
-                        if(MapTiles[TileIndex+MapSizeY].Type == ETile::Floor)
+                        if(MapTiles[TileIndex+MaxMapSizeY].Type == ETile::Floor)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.4, 0.0f, 0.0f));
@@ -129,9 +140,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // South Wall
-                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY))
+                    if(MapTiles.IsValidIndex(TileIndex-MaxMapSizeY))
                     {
-                        if(MapTiles[TileIndex-MapSizeY].Type == ETile::Floor)
+                        if(MapTiles[TileIndex-MaxMapSizeY].Type == ETile::Floor)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 180.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location - FVector(CurrentRoom->MeshSize.X * 0.4, 0.0f, 0.0f));
@@ -161,9 +172,9 @@ void ASunriseMap::GenerateMap()
 
                     // Render Outer Corner Pillars
                     // Northeast Pillar
-                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    if(MapTiles.IsValidIndex(TileIndex+MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
                     {
-                        if(MapTiles[TileIndex+MapSizeY].Type == ETile::Floor && MapTiles[TileIndex+1].Type == ETile::Floor)
+                        if(MapTiles[TileIndex+MaxMapSizeY].Type == ETile::Floor && MapTiles[TileIndex+1].Type == ETile::Floor)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -171,9 +182,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // Northwest Pillar
-                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    if(MapTiles.IsValidIndex(TileIndex+MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
                     {
-                        if(MapTiles[TileIndex+MapSizeY].Type == ETile::Floor && MapTiles[TileIndex-1].Type == ETile::Floor)
+                        if(MapTiles[TileIndex+MaxMapSizeY].Type == ETile::Floor && MapTiles[TileIndex-1].Type == ETile::Floor)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -181,9 +192,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // Southeast Pillar
-                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    if(MapTiles.IsValidIndex(TileIndex-MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
                     {
-                        if(MapTiles[TileIndex-MapSizeY].Type == ETile::Floor && MapTiles[TileIndex+1].Type == ETile::Floor)
+                        if(MapTiles[TileIndex-MaxMapSizeY].Type == ETile::Floor && MapTiles[TileIndex+1].Type == ETile::Floor)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -191,9 +202,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // Southwest Pillar
-                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    if(MapTiles.IsValidIndex(TileIndex-MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
                     {
-                        if(MapTiles[TileIndex-MapSizeY].Type == ETile::Floor && MapTiles[TileIndex-1].Type == ETile::Floor)
+                        if(MapTiles[TileIndex-MaxMapSizeY].Type == ETile::Floor && MapTiles[TileIndex-1].Type == ETile::Floor)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -203,9 +214,9 @@ void ASunriseMap::GenerateMap()
 
                     // Render Inner Corner PIllars
                     // Northeast Pillar
-                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY-1) && MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    if(MapTiles.IsValidIndex(TileIndex-MaxMapSizeY-1) && MapTiles.IsValidIndex(TileIndex-MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
                     {
-                        if(MapTiles[TileIndex-MapSizeY-1].Type == ETile::Floor && MapTiles[TileIndex-MapSizeY].Type == ETile::None && MapTiles[TileIndex-1].Type == ETile::None)
+                        if(MapTiles[TileIndex-MaxMapSizeY-1].Type == ETile::Floor && MapTiles[TileIndex-MaxMapSizeY].Type == ETile::None && MapTiles[TileIndex-1].Type == ETile::None)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f),  
                                                        MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -213,9 +224,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // Northwest Pillar
-                    if(MapTiles.IsValidIndex(TileIndex-MapSizeY+1) && MapTiles.IsValidIndex(TileIndex-MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    if(MapTiles.IsValidIndex(TileIndex-MaxMapSizeY+1) && MapTiles.IsValidIndex(TileIndex-MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
                     {
-                        if(MapTiles[TileIndex-MapSizeY+1].Type == ETile::Floor && MapTiles[TileIndex-MapSizeY].Type == ETile::None && MapTiles[TileIndex+1].Type == ETile::None)
+                        if(MapTiles[TileIndex-MaxMapSizeY+1].Type == ETile::Floor && MapTiles[TileIndex-MaxMapSizeY].Type == ETile::None && MapTiles[TileIndex+1].Type == ETile::None)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(-CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -223,9 +234,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // Southeast Pillar
-                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY-1) && MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
+                    if(MapTiles.IsValidIndex(TileIndex+MaxMapSizeY-1) && MapTiles.IsValidIndex(TileIndex+MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex-1))
                     {
-                        if(MapTiles[TileIndex+MapSizeY-1].Type == ETile::Floor && MapTiles[TileIndex+MapSizeY].Type == ETile::None && MapTiles[TileIndex-1].Type == ETile::None)
+                        if(MapTiles[TileIndex+MaxMapSizeY-1].Type == ETile::Floor && MapTiles[TileIndex+MaxMapSizeY].Type == ETile::None && MapTiles[TileIndex-1].Type == ETile::None)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, -CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -233,9 +244,9 @@ void ASunriseMap::GenerateMap()
                         }
                     }
                     // Southwest Pillar
-                    if(MapTiles.IsValidIndex(TileIndex+MapSizeY+1) && MapTiles.IsValidIndex(TileIndex+MapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
+                    if(MapTiles.IsValidIndex(TileIndex+MaxMapSizeY+1) && MapTiles.IsValidIndex(TileIndex+MaxMapSizeY) && MapTiles.IsValidIndex(TileIndex+1))
                     {
-                        if(MapTiles[TileIndex+MapSizeY+1].Type == ETile::Floor && MapTiles[TileIndex+MapSizeY].Type == ETile::None && MapTiles[TileIndex+1].Type == ETile::None)
+                        if(MapTiles[TileIndex+MaxMapSizeY+1].Type == ETile::Floor && MapTiles[TileIndex+MaxMapSizeY].Type == ETile::None && MapTiles[TileIndex+1].Type == ETile::None)
                         {
                             TileTransform = FTransform(FRotator(0.0f, 0.0f, 0.0f), 
                                                        MapTiles[TileIndex].Location + FVector(CurrentRoom->MeshSize.X * 0.55f, CurrentRoom->MeshSize.Y * 0.55f, 0.0f));
@@ -253,13 +264,14 @@ void ASunriseMap::GenerateMap()
 
         // Spawn End of Level
         // Reverse through map tiles until a valid endpoint is found
-        for(int MapIndex = (MapSizeX * MapSizeY)-1; MapIndex > (MapSizeX * MapSizeY) / 2; --MapIndex)
+        // @TODO: bug - unable to spawn if no corridor is created. Add condition to spawn on end wall if no corridors
+        for(int MapIndex = (MapSizeX * MapSizeY)-1; MapIndex > MaxMapSizeY+1; --MapIndex)
         {
             int32 RandomTileEndIndex = MapIndex;
 
             // Opening to the left
             if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
-               MapTiles[RandomTileEndIndex+MapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MapSizeY].Type == ETile::None &&
+               MapTiles[RandomTileEndIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MaxMapSizeY].Type == ETile::None &&
                MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::Floor)
             {
                 CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 90.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
@@ -274,7 +286,7 @@ void ASunriseMap::GenerateMap()
 
             // Opening to the bottom
             if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
-               MapTiles[RandomTileEndIndex+MapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MapSizeY].Type == ETile::Floor &&
+               MapTiles[RandomTileEndIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MaxMapSizeY].Type == ETile::Floor &&
                MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::None)
             {
                 CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
@@ -304,11 +316,11 @@ void ASunriseMap::BinaryTreeMaze()
     *       - For each cell in the grid, toss a coin to decide whether to carve a passage south or west
     */
     int32 TileIndex = 0;
-    for(size_t RowIndex = 1; RowIndex < MapSizeX; RowIndex+=3)
+    for(size_t RowIndex = 1; RowIndex < MapSizeX; RowIndex+=2)
     {
-        for(size_t ColumnIndex = 1; ColumnIndex < MapSizeY; ColumnIndex+=3)
+        for(size_t ColumnIndex = 1; ColumnIndex < MapSizeY; ColumnIndex+=2)
         {   
-            TileIndex = RowIndex * MapSizeY + ColumnIndex;
+            TileIndex = RowIndex * MaxMapSizeY + ColumnIndex;
             // start tile
             if(RowIndex == 1 && ColumnIndex == 1)
             {
@@ -320,15 +332,13 @@ void ASunriseMap::BinaryTreeMaze()
             {
                 MapTiles[TileIndex].Type = ETile::Floor;
                 MapTiles[TileIndex-1].Type = ETile::Floor;
-                MapTiles[TileIndex-1-1].Type = ETile::Floor;
                 continue;
             }
             // Go Vertical (South)
             if(ColumnIndex == 1)
             {
                 MapTiles[TileIndex].Type = ETile::Floor;
-                MapTiles[TileIndex-MapSizeY].Type = ETile::Floor;
-                MapTiles[TileIndex-MapSizeY-MapSizeY].Type = ETile::Floor;
+                MapTiles[TileIndex-MaxMapSizeY].Type = ETile::Floor;
                 continue;
             }
 
@@ -339,14 +349,12 @@ void ASunriseMap::BinaryTreeMaze()
                 // Go Horizontal (West)
                 MapTiles[TileIndex].Type = ETile::Floor;
                 MapTiles[TileIndex-1].Type = ETile::Floor;
-                MapTiles[TileIndex-1-1].Type = ETile::Floor;
             }
             else
             {
                 // Go Vertical (South)
                 MapTiles[TileIndex].Type = ETile::Floor;
-                MapTiles[TileIndex-MapSizeY].Type = ETile::Floor;
-                MapTiles[TileIndex-MapSizeY-MapSizeY].Type = ETile::Floor;
+                MapTiles[TileIndex-MaxMapSizeY].Type = ETile::Floor;
             }
         }
     }
@@ -354,7 +362,9 @@ void ASunriseMap::BinaryTreeMaze()
 
 void ASunriseMap::SpawnPlayerStart()
 {
-    int32 PlayerStartIndex = Stream.RandRange(MapSizeY+1, (MapSizeY-1) * 2);
+    int32 RandomRowIndex = 1;
+    int32 RandomColumnIndex = Stream.RandRange(1, MapSizeY-1);
+    int32 PlayerStartIndex = RandomRowIndex * MaxMapSizeY + RandomColumnIndex;
 
     FActorSpawnParameters SpawnParams;
     GetWorld()->SpawnActor<APlayerStart>(PlayerStart, FTransform(MapTiles[PlayerStartIndex].Location + FVector(0.0f, 0.0f, 110.f)));
@@ -367,7 +377,10 @@ void ASunriseMap::SpawnAICharacters(TSubclassOf<ACharacter> AICharacter)
     SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
     while(Count < AISpawnCount)
     {
-        int32 AICharacterStartIndex = Stream.RandRange((MapSizeY * 2) + 1, MapSizeX * MapSizeY - 1);
+        // Never spawn in 1st row where player spawns
+        int32 RandomRowIndex = Stream.RandRange(2, MapSizeX-1);
+        int32 RandomColumnIndex = Stream.RandRange(1, MapSizeY-1);
+        int32 AICharacterStartIndex = RandomRowIndex * MaxMapSizeY + RandomColumnIndex;
         int32 TileRandomX = Stream.RandRange(1, 450);
         int32 TileRandomY = Stream.RandRange(1, 450);
         if(MapTiles[AICharacterStartIndex].Type == ETile::Floor)
@@ -394,7 +407,10 @@ void ASunriseMap::SpawnActors(int32 ActorSpawnCount, TSubclassOf<AActor> ActorTo
     int32 Count = 0;
     while(Count < ActorSpawnCount)
     {
-        int32 RandomIndex = Stream.RandRange((MapSizeX * MapSizeY * 0.2f) - 1, (MapSizeX * MapSizeY) - 1);
+        // Never spawn in 1st row where player spawns
+        int32 RandomRowIndex = Stream.RandRange(2, MapSizeX-1);
+        int32 RandomColumnIndex = Stream.RandRange(1, MapSizeY-1);
+        int32 RandomIndex = RandomRowIndex * MaxMapSizeY + RandomColumnIndex;
         if(MapTiles[RandomIndex].Type == ETile::Floor)
         {
             GetWorld()->SpawnActor<AActor>(ActorToSpawn, FTransform(MapTiles[RandomIndex].Location + FVector(0.0f, 0.0f, 23.0f)));
