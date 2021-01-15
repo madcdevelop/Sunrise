@@ -19,6 +19,7 @@ ASunriseMap::ASunriseMap()
         for(size_t ColumnIndex = 0; ColumnIndex < MaxMapSizeY; ++ColumnIndex)
         {
             int32 TileIndex = RowIndex * MaxMapSizeY + ColumnIndex;
+            // @CONSTANTS: Find way to not use constant for tile size.
             int32 LocationX = (TileIndex / MaxMapSizeY) * 1000.0f;
             int32 LocationY = (TileIndex % MaxMapSizeY) * 1000.0f;
 
@@ -262,43 +263,105 @@ void ASunriseMap::GenerateMap()
         SpawnAICharacters(MeleeAICharacter);
         SpawnActors(3, GoldenKey);
 
-        // Spawn End of Level
-        // Reverse through map tiles until a valid endpoint is found
-        // @TODO: bug - unable to spawn if no corridor is created. Add condition to spawn on end wall if no corridors
-        for(int MapIndex = (MapSizeX * MapSizeY)-1; MapIndex > MaxMapSizeY+1; --MapIndex)
+        // Spawn end door to exit level
+        // Find Available spawns
+        TArray<int32> AvailableSpawns;
+        for(int MapTileIndex = (MapSizeX * MapSizeY)-1; MapTileIndex > MaxMapSizeY * 0.9f; --MapTileIndex)
         {
-            int32 RandomTileEndIndex = MapIndex;
-
-            // Opening to the left
-            if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
-               MapTiles[RandomTileEndIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MaxMapSizeY].Type == ETile::None &&
-               MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::Floor)
+            // Opening to left corridor
+            if(MapTiles[MapTileIndex].Type == ETile::Floor && 
+               MapTiles[MapTileIndex+MaxMapSizeY].Type == ETile::None && MapTiles[MapTileIndex-MaxMapSizeY].Type == ETile::None &&
+               MapTiles[MapTileIndex+1].Type == ETile::None && MapTiles[MapTileIndex-1].Type == ETile::Floor)
             {
-                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 90.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 270.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(500.0f, -500.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
-                GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, -90.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(161.0f, -530.0f, 0.0f)));
-                GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
-                break;
+                AvailableSpawns.Add(MapTileIndex);
             }
-
-            // Opening to the bottom
-            if(MapTiles[RandomTileEndIndex].Type == ETile::Floor && 
-               MapTiles[RandomTileEndIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomTileEndIndex-MaxMapSizeY].Type == ETile::Floor &&
-               MapTiles[RandomTileEndIndex+1].Type == ETile::None && MapTiles[RandomTileEndIndex-1].Type == ETile::None)
+            // Opening to bottom corridor
+            else if(MapTiles[MapTileIndex].Type == ETile::Floor && 
+               MapTiles[MapTileIndex+MaxMapSizeY].Type == ETile::None && MapTiles[MapTileIndex-MaxMapSizeY].Type == ETile::Floor &&
+               MapTiles[MapTileIndex+1].Type == ETile::None && MapTiles[MapTileIndex-1].Type == ETile::None)
             {
-                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, 500.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
-                CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
-                GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomTileEndIndex].Location + FVector(-530.0f, -161.0f, 0.0f)));
-                GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomTileEndIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
-                break;
+                AvailableSpawns.Add(MapTileIndex);
             }
+        }
 
+        // Find only if there are no corridors to spawn end room
+        if(AvailableSpawns.Num() == 0)
+        {
+            for(int MapTileIndex = (MapSizeX * MapSizeY)-1; MapTileIndex > MaxMapSizeY * 0.9f; --MapTileIndex)
+            {
+                // Opening to left wall
+                if(MapTiles[MapTileIndex].Type == ETile::Floor && 
+                MapTiles[MapTileIndex+MaxMapSizeY].Type == ETile::Floor && MapTiles[MapTileIndex-MaxMapSizeY].Type == ETile::Floor &&
+                MapTiles[MapTileIndex+1].Type == ETile::None && MapTiles[MapTileIndex-1].Type == ETile::Floor)
+                {
+                    AvailableSpawns.Add(MapTileIndex);
+                }
+                // Opening to bottom wall
+                else if(MapTiles[MapTileIndex].Type == ETile::Floor && 
+                MapTiles[MapTileIndex+MaxMapSizeY].Type == ETile::None && MapTiles[MapTileIndex-MaxMapSizeY].Type == ETile::Floor &&
+                MapTiles[MapTileIndex+1].Type == ETile::Floor && MapTiles[MapTileIndex-1].Type == ETile::Floor)
+                {
+                    AvailableSpawns.Add(MapTileIndex);
+                }
+            }
+        }
+
+        // spawn end room
+        int32 MaxIndex = AvailableSpawns.Num()-1;
+        int32 RandomIndex = Stream.RandRange(0, MaxIndex);
+        int32 RandomSpawnIndex = AvailableSpawns[RandomIndex];
+
+        // Opening to left corridor
+        if(MapTiles[RandomSpawnIndex].Type == ETile::Floor && 
+            MapTiles[RandomSpawnIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomSpawnIndex-MaxMapSizeY].Type == ETile::None &&
+            MapTiles[RandomSpawnIndex+1].Type == ETile::None && MapTiles[RandomSpawnIndex-1].Type == ETile::Floor)
+        {
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 90.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 270.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(500.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
+            GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, -90.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(161.0f, -530.0f, 0.0f)));
+            GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
+        }
+        // Opening to left wall
+        else if(MapTiles[RandomSpawnIndex].Type == ETile::Floor && 
+            MapTiles[RandomSpawnIndex+MaxMapSizeY].Type == ETile::Floor && MapTiles[RandomSpawnIndex-MaxMapSizeY].Type == ETile::Floor &&
+            MapTiles[RandomSpawnIndex+1].Type == ETile::None && MapTiles[RandomSpawnIndex-1].Type == ETile::Floor)
+        {
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 90.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 270.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(500.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
+            GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, -90.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(161.0f, -530.0f, 0.0f)));
+            GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
+        }
+        // Opening to bottom corridor
+        else if(MapTiles[RandomSpawnIndex].Type == ETile::Floor && 
+            MapTiles[RandomSpawnIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomSpawnIndex-MaxMapSizeY].Type == ETile::Floor &&
+            MapTiles[RandomSpawnIndex+1].Type == ETile::None && MapTiles[RandomSpawnIndex-1].Type == ETile::None)
+        {
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, 500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
+            GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-530.0f, -161.0f, 0.0f)));
+            GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
+        }
+        // Opening to bottom wall
+        else if(MapTiles[RandomSpawnIndex].Type == ETile::Floor && 
+            MapTiles[RandomSpawnIndex+MaxMapSizeY].Type == ETile::None && MapTiles[RandomSpawnIndex-MaxMapSizeY].Type == ETile::Floor &&
+            MapTiles[RandomSpawnIndex+1].Type == ETile::Floor && MapTiles[RandomSpawnIndex-1].Type == ETile::Floor)
+        {
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->WallDoor, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, 0.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, 500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->PillarCorner, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-500.0f, -500.0f, 0.0f)));
+            CurrentRoom->GenerateTile(CurrentRoom->Ceiling, FTransform(FRotator(0.0f, 0.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 745.0f)));
+            GetWorld()->SpawnActor<ASunriseDoor>(Door, FTransform(FRotator(0.0f, 180.0f, 0.0f), MapTiles[RandomSpawnIndex].Location + FVector(-530.0f, -161.0f, 0.0f)));
+            GetWorld()->SpawnActor<AActor>(EndLevelTrigger, FTransform(MapTiles[RandomSpawnIndex].Location + FVector(0.0f, 0.0f, 350.0f)));
         }
 
     }
