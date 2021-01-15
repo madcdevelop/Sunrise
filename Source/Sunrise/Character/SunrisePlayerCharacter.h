@@ -70,8 +70,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
     TSubclassOf<class UDamageType> WeaponDamageType;
 
-	FTimerHandle AttackEffectTimerHandle;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
     float AttackEffectAnimationTime;
 
@@ -115,6 +113,6 @@ private:
     void OnBeginOverlap(AActor* MyOverlappedActor, AActor* OtherActor);
 
     UFUNCTION()
-    void DestroyEffect();
+    void DestroyActor(AActor* Actor);
 
 };

@@ -9,6 +9,7 @@
 
 #include "../Classes/Kismet/GameplayStatics.h"
 #include "../Classes/Kismet/KismetSystemLibrary.h"
+#include "TimerManager.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/GameEngine.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -158,10 +159,15 @@ void ASunrisePlayerCharacter::Attack()
 
     FCollisionShape MyColShape = FCollisionShape::MakeBox(FVector(500.0f, 500.0f, 500.0f));
     bool bIsHit = GetWorld()->SweepMultiByChannel(OutHits, EndLocation, EndLocation, FQuat::Identity, ECC_WorldDynamic, MyColShape);
-    // Uncomment to draw hit box of attack
+    // @Debugging
     // DrawDebugBox(GetWorld(), EndLocation, MyColShape.GetExtent(), FColor::Red, false, 2.0f);
-    GetWorld()->SpawnActor<AActor>(AttackEffect, FTransform(FVector(EndLocation.X, EndLocation.Y, 0.0f)));
-    GetWorld()->GetTimerManager().SetTimer(AttackEffectTimerHandle, this, &ASunrisePlayerCharacter::DestroyEffect, AttackEffectAnimationTime, false);
+    
+    AActor* CurrentAttackEffect = nullptr;
+    CurrentAttackEffect = GetWorld()->SpawnActor<AActor>(AttackEffect, FTransform(FRotator(GetActorRotation()), FVector(EndLocation.X, EndLocation.Y, 0.0f)));
+
+	FTimerHandle EffectTimerHandle;
+    FTimerDelegate EffectTimerDelegate = FTimerDelegate::CreateUObject(this, &ASunrisePlayerCharacter::DestroyActor, CurrentAttackEffect);
+    GetWorld()->GetTimerManager().SetTimer(EffectTimerHandle, EffectTimerDelegate, AttackEffectAnimationTime, false);
 
     if(bIsHit)
     {
@@ -266,12 +272,7 @@ void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* 
     }
 }
 
-void ASunrisePlayerCharacter::DestroyEffect()
+void ASunrisePlayerCharacter::DestroyActor(AActor* Actor)
 {
-    TArray<AActor*> OutActors;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AttackEffect, OutActors);
-    for(auto Actor: OutActors)
-    {
-        Actor->Destroy();
-    }   
+    Actor->Destroy();
 }
