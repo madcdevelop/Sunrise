@@ -14,20 +14,27 @@ UAttackBTTaskNode::UAttackBTTaskNode()
 EBTNodeResult::Type UAttackBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     ASunriseAIController* AICon = Cast<ASunriseAIController>(OwnerComp.GetAIOwner());
-    UBlackboardComponent* BlackboardComp = AICon->GetBlackboardComponent();
 
     if(AICon)
     {
+        UBlackboardComponent* BlackboardComp = AICon->GetBlackboardComponent();
         UObject* TargetPlayer = BlackboardComp->GetValueAsObject(BBKeyTargetPlayer.SelectedKeyName);
         ASunrisePlayerCharacter* PlayerChar = Cast<ASunrisePlayerCharacter>(TargetPlayer);
+        ACharacter* AIChar = AICon->GetCharacter();
+        ASunriseAICharacter* SunriseAIChar = Cast<ASunriseAICharacter>(AIChar);
 
-        if(PlayerChar)
+        if(PlayerChar && SunriseAIChar)
         {
-            ACharacter* AIChar = AICon->GetCharacter();
-            ASunriseAICharacter* SunriseAIChar = Cast<ASunriseAICharacter>(AIChar);
-            SunriseAIChar->Attack();
+            if(SunriseAIChar->GetHealth() >= 1.0f)
+            {
+                SunriseAIChar->Attack();
+                return EBTNodeResult::Succeeded;
+            }
+            else
+            {
+                return EBTNodeResult::Failed;
+            }
 
-            return EBTNodeResult::Succeeded;
         }
         else
         {
