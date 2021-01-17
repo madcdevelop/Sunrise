@@ -284,7 +284,12 @@ __pycache__/
 /Content/AdvancedVillagePack
 /Content/MCO_Mocap_Basics
 /Content/ParagonGideon
-/Content/Weapon_Pack
+/Content/Weapon_Pack/Blueprints
+/Content/Weapon_Pack/Map
+/Content/Weapon_Pack/Materials
+/Content/Weapon_Pack/Mesh
+/Content/Weapon_Pack/Skeletal_Mesh
+/Content/Weapon_Pack/Textures
 
 # source
 /Source/FBX
