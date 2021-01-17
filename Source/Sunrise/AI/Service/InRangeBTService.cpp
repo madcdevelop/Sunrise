@@ -39,8 +39,7 @@ void UInRangeBTService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
             // @TODO: update later to get the lose sight radius number from sight sense.
             if(Diff >= MaxRange)
             {
-                UObject* EmptyObject = nullptr;
-                BlackboardComp->SetValueAsObject(BBKeyTargetPlayer.SelectedKeyName, EmptyObject);
+                BlackboardComp->SetValueAsObject(BBKeyTargetPlayer.SelectedKeyName, nullptr);
             }
         }
     }
