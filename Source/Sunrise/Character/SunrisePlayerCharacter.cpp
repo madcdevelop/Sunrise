@@ -262,7 +262,7 @@ void ASunrisePlayerCharacter::OnBeginOverlap(AActor* MyOverlappedActor, AActor* 
             float WeaponDamage = TakeDamage(Weapon->GetDamage(), WeaponDamageEvent, AICon, Weapon);
             SetHealth(GetHealth() - WeaponDamage);
 
-            if(GetHealth() <= 0.0f){
+            if(GetHealth() <= 1.0f){
                 SetActorEnableCollision(false);
                 StartAnimation(DeathAnimation, DeathAnimationTime);
                 GetWorld()->GetTimerManager().SetTimer(CharacterTimerHandle, this, &ASunrisePlayerCharacter::OnDeath, DeathAnimationTime, false);

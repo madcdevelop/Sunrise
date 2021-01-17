@@ -33,7 +33,7 @@ void ASunriseAICharacter::OnRadialDamage(AActor* DamagedActor, float Damage, con
 {
     Health = Health - Damage;
 
-    if(Health <= 0.0f)
+    if(Health <= 1.0f)
     {
         SetActorEnableCollision(false);
         StartAnimation(DeathAnimation, DeathAnimationTime);
