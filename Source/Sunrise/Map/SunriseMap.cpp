@@ -435,6 +435,11 @@ void ASunriseMap::SpawnPlayerStart()
 
 void ASunriseMap::SpawnAICharacters(TSubclassOf<ACharacter> AICharacter)
 {
+    // @TODO: Use crowd manager max agents instead of hardcoded value
+    // Match with crowd manager settings
+    int32 MaxSpawnCount = 200;
+    checkf(AISpawnCount <= MaxSpawnCount, TEXT("The number of agents (%d) spawning is greater than Max Agents (%d) set in Crowd Manager settings. Some agents will not move."), AISpawnCount, MaxSpawnCount)
+
     int32 Count = 0;
     FActorSpawnParameters SpawnParams;
     SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
