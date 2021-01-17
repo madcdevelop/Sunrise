@@ -33,6 +33,15 @@ void UInRangeBTService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
             if(Diff <= MeleeRange) 
                 BlackboardComp->SetValueAsBool(BBMeleeRange.SelectedKeyName, true);
+            else
+                BlackboardComp->SetValueAsBool(BBMeleeRange.SelectedKeyName, false);
+
+            // @TODO: update later to get the lose sight radius number from sight sense.
+            if(Diff >= MaxRange)
+            {
+                UObject* EmptyObject = nullptr;
+                BlackboardComp->SetValueAsObject(BBKeyTargetPlayer.SelectedKeyName, EmptyObject);
+            }
         }
     }
 }

@@ -24,6 +24,10 @@ private:
     UPROPERTY(EditAnywhere, Category = "Node")
     float MeleeRange;
 
+    UPROPERTY(EditAnywhere, Category = "Node")
+    float MaxRange;
+
+
 public:
     UInRangeBTService();
 
